@@ -69,6 +69,7 @@ public class UserRepositoryImpl implements UserRepository {
             throw new NotFoundException("User deletion error: user is not founded");
         }
     }
+
     private void validateFoundForUser(Long userId) {
         if (!users.containsKey(userId)) {
             throw new NotFoundException("User is not founded");

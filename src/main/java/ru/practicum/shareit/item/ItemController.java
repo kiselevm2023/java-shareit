@@ -16,6 +16,7 @@ public class ItemController {
     private final ItemService itemService;
 
     private static final String TITLE_ITEM = "X-Sharer-User-Id";
+
     @Autowired
     public ItemController(ItemServiceImpl itemServiceImpl) {
         this.itemService = itemServiceImpl;
