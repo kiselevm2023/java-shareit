@@ -39,9 +39,17 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleThrowable(final ValidationException e) {
+        log.debug("Status is received 400 Bad request {}", e.getMessage(), e);
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleThrowable(final Throwable e) {
         log.debug("Status is received 500 Internal server error {}", e.getMessage(), e);
         return new ErrorResponse(e.getMessage());
     }
+
 }

@@ -10,30 +10,30 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
-public class UserRepositoryImpl implements UserRepository {
+public class UserRepositoryImpl {
 
-    private Map<Long, User> users = new HashMap<>();
+    private Map<Long, User> users = new HashMap<>();//айди юзера и сам юзер
     private final Map<String, User> userEmailRepository = new HashMap<>();
     Long userId = 1L;
 
-    @Override
+
     public List<User> getUsers() {
         return users.values().stream().collect(Collectors.toList());
     }
 
-    @Override
+
     public User getUserById(Long userId) {
         if (users.containsKey(userId)) {
             return users.get(userId);
         } else {
-            throw new NotFoundException("User does not exist");
+            throw new NotFoundException("пользователя не существует");
         }
     }
 
-    @Override
+
     public User createUser(User user) {
         if (userEmailRepository.containsKey(user.getEmail())) {
-            throw new AlreadyExsist("User with this email already exists");
+            throw new AlreadyExsist("Пользователь c такой почтой уже существует");
         } else {
             user.setId(userId);
             users.put(userId, user);
@@ -43,43 +43,49 @@ public class UserRepositoryImpl implements UserRepository {
         return user;
     }
 
-    @Override
+
     public User updateUser(User user, Long userId) {
         validateFoundForUser(userId);
-        validateForExistEmailWithOtherOwner(userId, user);
-        User updateUser = users.get(userId);
-        if (user.getName() != null) {
-            updateUser.setName(user.getName());
+        user.setId(userId);
+        if (user.getEmail() != null && user.getName() != null) {
+            userEmailRepository.remove(users.get(userId).getEmail());
+            users.get(userId).setEmail(user.getEmail());
+            users.get(userId).setName(user.getName());
+            userEmailRepository.put(users.get(userId).getEmail(), users.get(userId));
+        } else if (user.getEmail() != null) {
+            validateForExistEmailWithOtherOwner(userId, user);
+            userEmailRepository.remove(users.get(userId).getEmail());
+            users.get(userId).setEmail(user.getEmail());
+            userEmailRepository.put(users.get(userId).getEmail(), users.get(userId));
+            user.setName(users.get(userId).getName());
+        } else {
+            users.get(userId).setName(user.getName());
+            userEmailRepository.put(users.get(userId).getEmail(), users.get(userId));
+            user.setEmail(users.get(userId).getEmail());
         }
-        if (user.getEmail() != null) {
-            userEmailRepository.remove(updateUser.getEmail());
-            updateUser.setEmail(user.getEmail());
-            userEmailRepository.put(updateUser.getEmail(), updateUser);
-        }
-        users.put(userId, updateUser);
-        return updateUser;
+        return user;
     }
 
-    @Override
+
     public void deleteUser(Long userId) {
         if (users.containsKey(userId)) {
             userEmailRepository.remove(users.get(userId).getEmail());
             users.remove(userId);
         } else {
-            throw new NotFoundException("User deletion error: user is not founded");
+            throw new NotFoundException("Ошибка удаления пользователя: пользователь не найден");
         }
     }
 
     private void validateFoundForUser(Long userId) {
         if (!users.containsKey(userId)) {
-            throw new NotFoundException("User is not founded");
+            throw new NotFoundException("Пользователь не найден");
         }
     }
 
     private void validateForExistEmailWithOtherOwner(long userId, User user) {
         if (userEmailRepository.containsKey(user.getEmail())) {
             if (userEmailRepository.get(user.getEmail()).getId() != userId)
-                throw new AlreadyExsist("User with this email already exists");
+                throw new AlreadyExsist("Пользователь с таким email уже существует");
         }
     }
 }
