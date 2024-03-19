@@ -61,7 +61,7 @@ public class ItemServiceImpl implements ItemService {
             return ItemMapper.toItemDto(itemRepository.save(item));
         }
         Item item = itemOptional.get();
-        item.setAvailable(itemDto.isAvailable());
+        item.setAvailable(itemDto.getAvailable());
         return ItemMapper.toItemDto(itemRepository.save(item));
     }
 

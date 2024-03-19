@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
-import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Data
 @RequiredArgsConstructor
@@ -17,8 +17,8 @@ public class ItemDto {
     private String name;
     @NotBlank(message = "описание пустое")
     private String description;
-    @AssertTrue(message = "поле available пустое")
-    private boolean available;
+    @NotNull(message = "поле available пустое")
+    private Boolean available;
     private BookingItemDto lastBooking;
     private BookingItemDto nextBooking;
 }
