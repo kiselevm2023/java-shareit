@@ -12,7 +12,6 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/items")
 @Slf4j
 public class ItemController {
@@ -22,8 +21,8 @@ public class ItemController {
     private static final String TITLE_ITEM = "X-Sharer-User-Id";
 
     @Autowired
-    public ItemController(ItemServiceImpl itemServiceImpl) {
-        this.itemService = itemServiceImpl;
+    public ItemController(ItemService itemService) {
+        this.itemService = itemService;
     }
 
     @PostMapping

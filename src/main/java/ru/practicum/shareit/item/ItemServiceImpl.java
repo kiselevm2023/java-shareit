@@ -45,24 +45,20 @@ public class ItemServiceImpl implements ItemService {
         Optional<Item> itemOptional = itemRepository.findById(itemId);
         validateFoundForItem(itemOptional);
         validateForOwner(userId, itemOptional.get().getOwner().getId(), itemId);
-        if (itemDto.getDescription() != null && itemDto.getName() != null) {
-            Item item = ItemMapper.toItem(itemDto, userOptional.get());
-            item.setId(itemId);
-            return ItemMapper.toItemDto(itemRepository.save(item));
+        Item oldItem = itemOptional.get();
+        String newName = itemDto.getName();
+        if (newName != null && !newName.isBlank()) {
+            oldItem.setName(newName);
         }
-        if (itemDto.getDescription() != null) {
-            Item item = itemOptional.get();
-            item.setDescription(itemDto.getDescription());
-            return ItemMapper.toItemDto(itemRepository.save(item));
+        String newDescription = itemDto.getDescription();
+        if (newDescription != null && !newDescription.isBlank()) {
+            oldItem.setDescription(newDescription);
         }
-        if (itemDto.getName() != null) {
-            Item item = itemOptional.get();
-            item.setName(itemDto.getName());
-            return ItemMapper.toItemDto(itemRepository.save(item));
+        Boolean newAvailable = itemDto.getAvailable();
+        if (newAvailable != null) {
+            oldItem.setAvailable(newAvailable);
         }
-        Item item = itemOptional.get();
-        item.setAvailable(itemDto.getAvailable());
-        return ItemMapper.toItemDto(itemRepository.save(item));
+        return ItemMapper.toItemDto(itemRepository.save(oldItem));
     }
 
     @Override

@@ -38,19 +38,16 @@ public class UserServiceImpl implements UserService {
     public UserDto updateUser(UserDto userDto, Long userId) {
         Optional<User> userOptional = userRepository.findById(userId);
         validateFoundForUser(userOptional, userId);
-        if (userDto.getEmail() != null && userDto.getName() != null) {
-            User user = UserMapper.toUser(userDto);
-            user.setId(userId);
-            return UserMapper.userToDto(userRepository.save(user));
+        User updateUser = userOptional.get();
+        String updateName = userDto.getName();
+        if (updateName != null && !updateName.isBlank()) {
+            updateUser.setName(updateName);
         }
-        if (userDto.getEmail() != null) {
-            User user = userOptional.get();
-            user.setEmail(userDto.getEmail());
-            return UserMapper.userToDto(userRepository.save(user));
+        String updateEmail = userDto.getEmail();
+        if (updateEmail != null && !updateEmail.isBlank()) {
+            updateUser.setEmail(updateEmail);
         }
-        User user = userOptional.get();
-        user.setName(userDto.getName());
-        return UserMapper.userToDto(userRepository.save(user));
+        return UserMapper.userToDto(userRepository.save(updateUser));
     }
 
     @Override
