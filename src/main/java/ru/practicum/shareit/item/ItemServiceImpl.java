@@ -108,7 +108,7 @@ public class ItemServiceImpl implements ItemService {
         userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Пользователь с id = " + userId + " не найден"));
         if (text.isBlank()) {
-            return new ArrayList<>();
+            return List.of();
         }
         return itemRepository.getItemForBooker(text.toLowerCase().trim())
                 .stream()
