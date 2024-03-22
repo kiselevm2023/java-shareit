@@ -1,10 +1,13 @@
 package ru.practicum.shareit.comment;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import ru.practicum.shareit.comment.dto.CommentDto;
 import ru.practicum.shareit.item.model.Item;
 
 import java.time.LocalDateTime;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CommentMapper {
 
     public static Comment toComment(CommentDto commentDto, Item item, String name) {
