@@ -10,6 +10,7 @@ import ru.practicum.shareit.comment.CommentRepository;
 import ru.practicum.shareit.comment.dto.CommentDto;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
+import ru.practicum.shareit.item.dto.CreateItemDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.model.ItemMapper;
@@ -32,10 +33,10 @@ public class ItemServiceImpl implements ItemService {
     private final CommentRepository commentRepository;
 
     @Override
-    public ItemDto createItem(Long userId, ItemDto itemDto) {
+    public ItemDto createItem(Long userId, CreateItemDto createItemDto) {
         Optional<User> userOpt = userRepository.findById(userId);
         validateUserFounded(userOpt);
-        return ItemMapper.toItemDto(itemRepository.save(ItemMapper.toItem(itemDto, userOpt.get())));
+        return ItemMapper.toItemDto(itemRepository.save(ItemMapper.createToItem(createItemDto, userOpt.get())));
     }
 
     @Override
@@ -84,8 +85,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> getAllItemForOwner(long userId) {
-        userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("Пользователь с id = " + userId + " не найден"));
+        userRepository.findByIdOrThrow(userId);
         List<Item> items = itemRepository.findByOwner_id(userId);
         List<ItemDto> itemDto = new ArrayList<>();
         for (Item item : items) {
@@ -101,8 +101,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> getItemForBooker(String text, long userId) {
-        userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("Пользователь с id = " + userId + " не найден"));
+        userRepository.findByIdOrThrow(userId);
         if (text.isBlank()) {
             return List.of();
         }

@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.comment.Comment;
 import ru.practicum.shareit.comment.dto.CommentDto;
 import ru.practicum.shareit.data.Constants;
+import ru.practicum.shareit.item.dto.CreateItemDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 
 import javax.validation.Valid;
@@ -24,9 +25,9 @@ public class ItemController {
     }
 
     @PostMapping
-    public ItemDto createItem(@RequestHeader(Constants.TITLE_ITEM) Long userId, @Valid @RequestBody ItemDto itemDto) {
+    public ItemDto createItem(@RequestHeader(Constants.TITLE_ITEM) Long userId, @Valid @RequestBody CreateItemDto createItemDto) {
         log.info("Получен запрос на добавление вещи");
-        return itemService.createItem(userId, itemDto);
+        return itemService.createItem(userId, createItemDto);
     }
 
     @PatchMapping("/{itemId}")

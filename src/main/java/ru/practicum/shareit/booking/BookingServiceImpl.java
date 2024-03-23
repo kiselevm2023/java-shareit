@@ -2,6 +2,7 @@ package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.CreateBookingDto;
@@ -77,17 +78,13 @@ public class BookingServiceImpl implements BookingService {
     public List<BookingDto> getAllBookingForUser(long userId, String state) {
         userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Пользователь с id = " + userId + " не найден"));
-        try {
-            State.valueOf(state);
-        } catch (IllegalArgumentException e) {
-            throw new ValidationException("Unknown state: UNSUPPORTED_STATUS");
-        }
-        switch (State.valueOf(state)) {
+        State bookingState = checkState(state);
+        switch (bookingState) {
             case ALL:
                 return bookingRepository.findByBooker_IdOrderByStartDesc(userId).stream().map(x -> BookingMapper.bookingToDto(x))
                         .collect(Collectors.toList());
             case CURRENT:
-                return bookingRepository.findCurrentBookerForUser(userId).stream()
+                return bookingRepository.findCurrentBookerForUser(userId, Sort.by(Sort.Direction.DESC, "start")).stream()
                         .map(x -> BookingMapper.bookingToDto(x)).collect(Collectors.toList());
             case PAST:
                 return bookingRepository.getPastBooking(userId).stream()

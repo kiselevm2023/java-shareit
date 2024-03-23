@@ -14,9 +14,10 @@ public class CommentDto {
 
     private Long id;
     @NotBlank(message = "Текст комметария не может быть пустым")
-    @Size(max = 500, message = "Длина текста комментария должна быть не больше {max} символов")
+    @Size(max = 255, message = "Длина текста комментария должна быть не больше {max} символов")
     private String text;
     private Item item;
+    @Size(max = 255, message = "Длина имени автора должна быть не больше {max} символов")
     private String authorName;
     private LocalDateTime created;
 }

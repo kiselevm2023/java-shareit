@@ -1,5 +1,6 @@
 package ru.practicum.shareit.booking;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -11,8 +12,8 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findByBooker_IdOrderByStartDesc(long userId);
 
     @Query(value = "SELECT b FROM Booking AS b WHERE b.booker.id = ?1 AND " +
-            "CURRENT_TIME BETWEEN b.start AND b.end ORDER BY b.start DESC")
-    List<Booking> findCurrentBookerForUser(long userId);
+            "CURRENT_TIME BETWEEN b.start AND b.end")
+    List<Booking> findCurrentBookerForUser(long userId, Sort sort);
 
     @Query(value = "SELECT b FROM Booking AS b WHERE b.booker.id = ?1 AND " +
             "CURRENT_TIME > b.end ORDER BY b.start DESC")

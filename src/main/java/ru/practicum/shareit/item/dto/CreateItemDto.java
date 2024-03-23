@@ -11,7 +11,7 @@ import javax.validation.constraints.Size;
 @Data
 @RequiredArgsConstructor
 @AllArgsConstructor
-public class ItemDto {
+public class CreateItemDto {
 
     private long id;
     @NotBlank(message = "поле name пустое")
@@ -22,6 +22,4 @@ public class ItemDto {
     private String description;
     @NotNull(message = "поле available пустое")
     private Boolean available;
-    private BookingItemDto lastBooking;
-    private BookingItemDto nextBooking;
 }
