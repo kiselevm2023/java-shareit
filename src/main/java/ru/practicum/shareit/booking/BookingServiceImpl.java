@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.dto.CreateBookingDto;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.ItemRepository;
@@ -27,18 +28,19 @@ public class BookingServiceImpl implements BookingService {
     private LocalDateTime timeNow = LocalDateTime.now();
 
     @Override
-    public BookingDto createBooking(BookingDto bookingDto, long userId) {
+    public BookingDto createBooking(CreateBookingDto createBookingDto, long userId) {
         Optional<User> userOptional = userRepository.findById(userId);
-        Optional<Item> itemOptional = itemRepository.findById(bookingDto.getItemId());
+        Optional<Item> itemOptional = itemRepository.findById(createBookingDto.getItemId());
         validFoundForUser(userOptional);
         validFoundForItem(itemOptional);
-        checkCorrectTime(bookingDto.getStart(), bookingDto.getEnd());
+        checkCorrectTime(createBookingDto.getStart(), createBookingDto.getEnd());
         validForAvailable(itemOptional);
-        validForTime(itemOptional, bookingDto);
+        validForTime(itemOptional, createBookingDto);
         validForOwnerNotBookingMySelf(itemOptional, userId);
-        bookingDto.setBooker(userOptional.get());
-        bookingDto.setItem(itemOptional.get());
-        return BookingMapper.bookingToDto(bookingRepository.save(BookingMapper.toBooking(bookingDto)));
+        User booker = userOptional.get();
+        Item item = itemOptional.get();
+        Booking booking = BookingMapper.toBooking(createBookingDto, booker, item);
+        return BookingMapper.bookingToDto(bookingRepository.save(booking));
     }
 
     @Override
@@ -113,12 +115,8 @@ public class BookingServiceImpl implements BookingService {
     public List<BookingDto> getAllBookingForOwner(long userId, String state) {
         userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Пользователь с id = " + userId + " не найден"));
-        try {
-            State.valueOf(state);
-        } catch (IllegalArgumentException e) {
-            throw new ValidationException("Unknown state: UNSUPPORTED_STATUS");
-        }
-        switch (State.valueOf(state)) {
+        State bookingState = checkState(state);
+        switch (bookingState) {
             case ALL:
                 return bookingRepository.findByItem_Owner_IdOrderByStartDesc(userId).stream()
                         .map(x -> BookingMapper.bookingToDto(x)).collect(Collectors.toList());
@@ -178,9 +176,9 @@ public class BookingServiceImpl implements BookingService {
         }
     }
 
-    private void validForTime(Optional<Item> itemOptional, BookingDto bookingDto) {
+    private void validForTime(Optional<Item> itemOptional, CreateBookingDto createBookingDto) {
         List<Booking> bookings = bookingRepository.findBookingByItemToFree(itemOptional.get().getId(),
-                bookingDto.getStart(), bookingDto.getEnd());
+                createBookingDto.getStart(), createBookingDto.getEnd());
         if (bookings.size() > 0) {
             throw new ValidationException("Вещь занята");
         }
@@ -208,5 +206,21 @@ public class BookingServiceImpl implements BookingService {
         if (itemOptional.get().getOwner().getId() == userId) {
             throw new NotFoundException("Вы не можете бронировать свою вещь");
         }
+    }
+
+    private State checkState(String state) {
+        log.info("Сервис: валидация состояния бронирования");
+        State bookingState = null;
+        for (State s : State.values()) {
+            if (s.name().equals(state)) {
+                bookingState = s;
+                break;
+            }
+        }
+        if (bookingState == null) {
+            log.error("Unknown state: {}", state);
+            throw new ValidationException("Unknown state: UNSUPPORTED_STATUS");
+        }
+        return bookingState;
     }
 }
