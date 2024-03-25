@@ -1,5 +1,7 @@
 package ru.practicum.shareit.item.dto;
 
+import ru.practicum.shareit.booking.dto.BookingItemDto;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;

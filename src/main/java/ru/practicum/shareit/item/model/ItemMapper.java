@@ -2,19 +2,15 @@ package ru.practicum.shareit.item.model;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.comment.dto.CommentDto;
-import ru.practicum.shareit.item.dto.BookingItemDto;
+import ru.practicum.shareit.booking.dto.BookingItemDto;
 import ru.practicum.shareit.item.dto.ItemCommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.CreateItemDto;
 import ru.practicum.shareit.item.dto.ItemOwnerDto;
 import ru.practicum.shareit.user.User;
 
-import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ItemMapper {
@@ -63,44 +59,6 @@ public class ItemMapper {
         return itemCommentDto;
     }
 
-    public static ItemOwnerDto toItemOwnerDto(Item item, List<Booking> bookings) {
-
-        ItemOwnerDto itemOwnerDto = new ItemOwnerDto();
-        itemOwnerDto.setId(item.getId());
-        itemOwnerDto.setName(item.getName());
-        itemOwnerDto.setDescription(item.getDescription());
-        itemOwnerDto.setAvailable(item.isAvailable());
-
-        Optional<Booking> lastBooking = bookings.stream()
-                .filter(booking1 -> booking1.getEnd().isBefore(LocalDateTime.now())
-                        || (booking1.getStart().isBefore(LocalDateTime.now()) &&
-                        booking1.getEnd().isAfter(LocalDateTime.now())))
-                .max(Comparator.comparing(Booking::getEnd));
-        if (lastBooking.isPresent()) {
-            BookingItemDto bookingItemDto = new BookingItemDto();
-            bookingItemDto.setBookerId(lastBooking.get().getBooker().getId());
-            bookingItemDto.setBooking(lastBooking.get());
-            bookingItemDto.setId(lastBooking.get().getId());
-            itemOwnerDto.setLastBooking(bookingItemDto);
-        } else {
-            itemOwnerDto.setLastBooking(null);
-        }
-
-        Optional<Booking> nextBooking = bookings.stream()
-                .filter(booking1 -> booking1.getStart().isAfter(LocalDateTime.now()))
-                .min(Comparator.comparing(Booking::getStart));
-        if (nextBooking.isPresent()) {
-            BookingItemDto bookingItemDto = new BookingItemDto();
-            bookingItemDto.setBookerId(nextBooking.get().getBooker().getId());
-            bookingItemDto.setBooking(nextBooking.get());
-            bookingItemDto.setId(nextBooking.get().getId());
-            itemOwnerDto.setNextBooking(bookingItemDto);
-        } else {
-            itemOwnerDto.setNextBooking(null);
-        }
-        return itemOwnerDto;
-    }
-
     public static Item createToItem(CreateItemDto createItemDto, User user) {
         Item item = new Item();
         item.setName(createItemDto.getName());
@@ -110,4 +68,15 @@ public class ItemMapper {
         return item;
     }
 
+    public static ItemDto mapToItemDto(Item item, BookingItemDto lastBooking, BookingItemDto nextBooking, List<CommentDto> commentsDto) {
+        ItemDto itemDto = new ItemDto();
+        itemDto.setId(item.getId());
+        itemDto.setName(item.getName());
+        itemDto.setDescription(item.getDescription());
+        itemDto.setAvailable(item.isAvailable());
+        itemDto.setLastBooking(lastBooking);
+        itemDto.setNextBooking(nextBooking);
+        itemDto.setComments(commentsDto);
+        return itemDto;
+    }
 }

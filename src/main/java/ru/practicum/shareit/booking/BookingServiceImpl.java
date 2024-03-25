@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.dto.BookingItemDto;
 import ru.practicum.shareit.booking.dto.CreateBookingDto;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
@@ -17,6 +18,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static ru.practicum.shareit.booking.BookingMapper.mapToBookingItemDto;
 
 @Service
 @RequiredArgsConstructor
@@ -135,6 +138,18 @@ public class BookingServiceImpl implements BookingService {
             default:
                 throw new ValidationException("Неверный статус");
         }
+    }
+
+    @Override
+    public BookingItemDto getLastItemBooking(long itemId, long ownerId, LocalDateTime currentTime) {
+        Booking booking = bookingRepository.getLastItemBooking(itemId, currentTime);
+        return booking != null ? mapToBookingItemDto(booking) : null;
+    }
+
+    @Override
+    public BookingItemDto getNextItemBooking(long itemId, long ownerId, LocalDateTime currentTime) {
+        Booking booking = bookingRepository.getNextItemBooking(itemId, currentTime);
+        return booking != null ? mapToBookingItemDto(booking) : null;
     }
 
     private void validFoundForBooking(Optional<Booking> booking) {
