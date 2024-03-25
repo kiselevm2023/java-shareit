@@ -12,7 +12,8 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     List<Item> findAllByOwnerIdOrderByIdAsc(long ownerId);
 
     default Item findByIdOrThrow(Long itemId) {
-        return findById(itemId).orElseThrow(() -> new NotFoundException("Вещь с id = " + itemId + " не найдена"));}
+        return findById(itemId).orElseThrow(() -> new NotFoundException("Вещь с id = " + itemId + " не найдена"));
+    }
 
     List<Item> findByOwner_id(long userId);
 
