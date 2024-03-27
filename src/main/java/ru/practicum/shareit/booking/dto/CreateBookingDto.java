@@ -20,6 +20,6 @@ public class CreateBookingDto {
     @NotNull
     @Future
     private LocalDateTime end;
-    @NotNull
+
     private long itemId;
 }

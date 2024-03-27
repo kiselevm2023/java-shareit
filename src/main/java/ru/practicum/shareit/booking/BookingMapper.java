@@ -33,6 +33,26 @@ public class BookingMapper {
     }
 
     public static BookingItemDto mapToBookingItemDto(Booking booking) {
-        return new BookingItemDto(booking.getId(), booking.getBooker().getId());
+        BookingItemDto bookingResponseDto = new BookingItemDto();
+        bookingResponseDto.setId(booking.getId());
+        bookingResponseDto.setBookerId(booking.getBooker().getId());
+        bookingResponseDto.setStart(booking.getStart());
+        bookingResponseDto.setEnd(booking.getEnd());
+        bookingResponseDto.setItemId(booking.getItem().getId());
+        bookingResponseDto.setBooker(booking.getBooker());
+        bookingResponseDto.setStatus(booking.getStatus());
+        return bookingResponseDto;
+    }
+
+    public static BookingItemDto toBookingResponseDto(Booking booking) {
+        BookingItemDto bookingResponseDto = new BookingItemDto();
+        bookingResponseDto.setId(booking.getId());
+        bookingResponseDto.setBookerId(booking.getBooker().getId());
+        bookingResponseDto.setStart(booking.getStart());
+        bookingResponseDto.setEnd(booking.getEnd());
+        bookingResponseDto.setItemId(booking.getItem().getId());
+        bookingResponseDto.setBooker(booking.getBooker());
+        bookingResponseDto.setStatus(booking.getStatus());
+        return bookingResponseDto;
     }
 }

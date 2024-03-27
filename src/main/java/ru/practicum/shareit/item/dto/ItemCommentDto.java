@@ -3,7 +3,7 @@ package ru.practicum.shareit.item.dto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
-import ru.practicum.shareit.comment.dto.CommentDto;
+import ru.practicum.shareit.comment.dto.ResponseComment;
 
 import java.util.List;
 
@@ -11,5 +11,5 @@ import java.util.List;
 @Data
 @RequiredArgsConstructor
 public class ItemCommentDto extends ItemDto {
-    private List<CommentDto> comments;
+    private List<ResponseComment> comments;
 }

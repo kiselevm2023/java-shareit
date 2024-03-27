@@ -81,28 +81,28 @@ public class BookingServiceImpl implements BookingService {
     public List<BookingDto> getAllBookingForUser(long userId, String state) {
         userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Пользователь с id = " + userId + " не найден"));
-        State bookingState = checkState(state);
+        State bookingState = State.checkState(state);
         switch (bookingState) {
             case ALL:
-                return bookingRepository.findByBooker_IdOrderByStartDesc(userId).stream().map(x -> BookingMapper.bookingToDto(x))
+                return bookingRepository.findByBooker_IdOrderByStartDesc(userId, Sort.by(Sort.Direction.DESC, "start")).stream().map(x -> BookingMapper.bookingToDto(x))
                         .collect(Collectors.toList());
             case CURRENT:
                 return bookingRepository.findCurrentBookerForUser(userId, Sort.by(Sort.Direction.DESC, "start")).stream()
                         .map(x -> BookingMapper.bookingToDto(x)).collect(Collectors.toList());
             case PAST:
-                return bookingRepository.getPastBooking(userId).stream()
+                return bookingRepository.getPastBooking(userId, Sort.by(Sort.Direction.DESC, "start")).stream()
                         .map(x -> BookingMapper.bookingToDto(x)).collect(Collectors.toList());
             case FUTURE:
-                return bookingRepository.findByBooker_IdAndStartAfterOrderByStartDesc(userId, timeNow).stream()
+                return bookingRepository.findByBooker_IdAndStartAfterOrderByStartDesc(userId, timeNow, Sort.by(Sort.Direction.DESC, "start")).stream()
                         .map(x -> BookingMapper.bookingToDto(x)).collect(Collectors.toList());
 
             case WAITING:
-                return bookingRepository.findByBooker_IdAndStatusOrderByStartDesc(userId, Status.WAITING)
+                return bookingRepository.findByBooker_IdAndStatusOrderByStartDesc(userId, Status.WAITING, Sort.by(Sort.Direction.DESC, "start"))
                         .stream()
                         .map(x -> BookingMapper.bookingToDto(x))
                         .collect(Collectors.toList());
             case REJECTED:
-                return bookingRepository.findByBooker_IdAndStatusOrderByStartDesc(userId, Status.REJECTED)
+                return bookingRepository.findByBooker_IdAndStatusOrderByStartDesc(userId, Status.REJECTED, Sort.by(Sort.Direction.DESC, "start"))
                         .stream()
                         .map(x -> BookingMapper.bookingToDto(x))
                         .collect(Collectors.toList());
@@ -110,30 +110,29 @@ public class BookingServiceImpl implements BookingService {
                 throw new ValidationException("Unknown state: UNSUPPORTED_STATUS");
         }
     }
-
     @Override
     public List<BookingDto> getAllBookingForOwner(long userId, String state) {
         userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Пользователь с id = " + userId + " не найден"));
-        State bookingState = checkState(state);
+        State bookingState = State.checkState(state);
         switch (bookingState) {
             case ALL:
-                return bookingRepository.findByItem_Owner_IdOrderByStartDesc(userId).stream()
+                return bookingRepository.findByItem_Owner_IdOrderByStartDesc(userId, Sort.by(Sort.Direction.DESC, "start")).stream()
                         .map(x -> BookingMapper.bookingToDto(x)).collect(Collectors.toList());
             case CURRENT:
-                return bookingRepository.findCurrentBookerForOwner(userId).stream()
+                return bookingRepository.findCurrentBookerForOwner(userId, Sort.by(Sort.Direction.DESC, "start")).stream()
                         .map(x -> BookingMapper.bookingToDto(x)).collect(Collectors.toList());
             case PAST:
-                return bookingRepository.findPastBookerForOwner(userId).stream()
+                return bookingRepository.findPastBookerForOwner(userId, Sort.by(Sort.Direction.DESC, "start")).stream()
                         .map(x -> BookingMapper.bookingToDto(x)).collect(Collectors.toList());
             case FUTURE:
-                return bookingRepository.findByItem_Owner_IdAndStartAfterOrderByStartDesc(userId, timeNow).stream()
+                return bookingRepository.findByItem_Owner_IdAndStartAfterOrderByStartDesc(userId, timeNow, Sort.by(Sort.Direction.DESC, "start")).stream()
                         .map(x -> BookingMapper.bookingToDto(x)).collect(Collectors.toList());
             case WAITING:
-                return bookingRepository.findByItem_Owner_IdAndStatusOrderByStartDesc(userId, Status.WAITING).stream()
+                return bookingRepository.findByItem_Owner_IdAndStatusOrderByStartDesc(userId, Status.WAITING, Sort.by(Sort.Direction.DESC, "start")).stream()
                         .map(x -> BookingMapper.bookingToDto(x)).collect(Collectors.toList());
             case REJECTED:
-                return bookingRepository.findByItem_Owner_IdAndStatusOrderByStartDesc(userId, Status.REJECTED).stream()
+                return bookingRepository.findByItem_Owner_IdAndStatusOrderByStartDesc(userId, Status.REJECTED, Sort.by(Sort.Direction.DESC, "start")).stream()
                         .map(x -> BookingMapper.bookingToDto(x)).collect(Collectors.toList());
             default:
                 throw new ValidationException("Неверный статус");
@@ -183,21 +182,21 @@ public class BookingServiceImpl implements BookingService {
     }
 
     private void validForAvailable(Optional<Item> itemOptional) {
-        if (!itemOptional.get().isAvailable()) {
+        if (!itemOptional.get().getAvailable()) {
             throw new ValidationException("Вещь недоступна");
         }
     }
 
     private void validForTime(Optional<Item> itemOptional, CreateBookingDto createBookingDto) {
         List<Booking> bookings = bookingRepository.findBookingByItemToFree(itemOptional.get().getId(),
-                createBookingDto.getStart(), createBookingDto.getEnd());
+                createBookingDto.getStart(), createBookingDto.getEnd(), Sort.by(Sort.Direction.DESC, "start"));
         if (bookings.size() > 0) {
             throw new ValidationException("Вещь занята");
         }
     }
 
     private void checkCorrectTime(LocalDateTime start, LocalDateTime end) {
-        if (!(start.isBefore(end) && start.isAfter(LocalDateTime.now()) && end.isAfter(LocalDateTime.now()))) {
+        if (!(start.isBefore(end) && start.isAfter(timeNow) && end.isAfter(timeNow))) {
             throw new ValidationException("Неверные параметры для времени, проверьте правильность запроса");
         }
     }
@@ -218,21 +217,5 @@ public class BookingServiceImpl implements BookingService {
         if (itemOptional.get().getOwner().getId() == userId) {
             throw new NotFoundException("Вы не можете бронировать свою вещь");
         }
-    }
-
-    private State checkState(String state) {
-        log.info("Сервис: валидация состояния бронирования");
-        State bookingState = null;
-        for (State s : State.values()) {
-            if (s.name().equals(state)) {
-                bookingState = s;
-                break;
-            }
-        }
-        if (bookingState == null) {
-            log.error("Unknown state: {}", state);
-            throw new ValidationException("Unknown state: UNSUPPORTED_STATUS");
-        }
-        return bookingState;
     }
 }
