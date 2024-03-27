@@ -112,6 +112,7 @@ public class BookingServiceImpl implements BookingService {
     }
     @Override
     public List<BookingDto> getAllBookingForOwner(long userId, String state) {
+
         userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Пользователь с id = " + userId + " не найден"));
         State bookingState = State.checkState(state);

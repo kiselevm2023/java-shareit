@@ -15,6 +15,7 @@ public enum State {
 
     private static final Logger log = LoggerFactory.getLogger(State.class);
     static State checkState(String state) {
+
         log.info("Сервис: валидация состояния бронирования");
         for (State s : State.values()) {
             if (s.name().equalsIgnoreCase(state)) {

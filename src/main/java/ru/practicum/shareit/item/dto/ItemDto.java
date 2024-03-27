@@ -5,10 +5,8 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import ru.practicum.shareit.comment.dto.ResponseComment;
 import ru.practicum.shareit.booking.dto.BookingItemDto;
-import ru.practicum.shareit.user.dto.Check;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 

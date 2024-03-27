@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.comment.Comment;
-import ru.practicum.shareit.comment.dto.ResponseComment;
 import ru.practicum.shareit.comment.dto.RequestComment;
 import ru.practicum.shareit.data.Constants;
 import ru.practicum.shareit.item.dto.CreateItemDto;

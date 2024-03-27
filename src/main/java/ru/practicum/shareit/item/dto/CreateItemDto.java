@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import ru.practicum.shareit.user.dto.Check;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
