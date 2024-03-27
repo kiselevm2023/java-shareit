@@ -14,6 +14,7 @@ public enum State {
     REJECTED;
 
     private static final Logger log = LoggerFactory.getLogger(State.class);
+
     static State checkState(String state) {
 
         log.info("Сервис: валидация состояния бронирования");

@@ -110,6 +110,7 @@ public class BookingServiceImpl implements BookingService {
                 throw new ValidationException("Unknown state: UNSUPPORTED_STATUS");
         }
     }
+
     @Override
     public List<BookingDto> getAllBookingForOwner(long userId, String state) {
 
