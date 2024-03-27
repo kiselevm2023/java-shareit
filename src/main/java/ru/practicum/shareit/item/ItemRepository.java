@@ -1,18 +1,23 @@
 package ru.practicum.shareit.item;
 
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.model.Item;
 
 import java.util.List;
 
-public interface ItemRepository {
+public interface ItemRepository extends JpaRepository<Item, Long> {
 
-    Item createItem(Long userId, Item item);
+    default Item findByIdOrThrow(Long itemId) {
+        return findById(itemId).orElseThrow(() -> new NotFoundException("Вещь с id = " + itemId + " не найдена"));
+    }
 
-    Item updateItem(long userId, Item item, long itemId);
+    @Query(value = "SELECT i FROM Item AS i WHERE ((UPPER(i.name) LIKE UPPER(CONCAT('%', ?1, '%')) " +
+                "OR UPPER(i.description) LIKE UPPER(CONCAT('%', ?1, '%'))) AND i.available IS TRUE)")
+    List<Item> getItemForBooker(String text);
 
-    List<Item> getAllItemForOwner(Long userId);
+    List<Item> findAllByOwnerId(Long ownerId, Sort sort);
 
-    List<Item> searchItem(String text);
-
-    Item getItemById(Long itemId);
 }

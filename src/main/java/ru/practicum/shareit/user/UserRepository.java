@@ -1,16 +1,11 @@
 package ru.practicum.shareit.user;
 
-import java.util.List;
+import ru.practicum.shareit.exception.NotFoundException;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UserRepository {
+public interface UserRepository extends JpaRepository<User, Long> {
 
-    List<User> getUsers();
-
-    User getUserById(Long userId);
-
-    User createUser(User user);
-
-    User updateUser(User updateUser, Long userId);
-
-    void deleteUser(Long userId);
+    default User findByIdOrThrow(Long id) {
+        return findById(id).orElseThrow(() -> new NotFoundException("Пользователь с id = " + id + " не найден"));
+    }
 }

@@ -10,11 +10,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 @Slf4j
 public class ErrorHandler {
-    @ExceptionHandler
+
+    @ExceptionHandler({ValidationException.class, MethodArgumentNotValidException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse onMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+    public ErrorResponse handleValidationExceptions(final RuntimeException e) {
         log.debug("Status is received 400 Bad request {}", e.getMessage(), e);
-        return new ErrorResponse(e.getFieldError().getDefaultMessage());
+        return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler
@@ -44,4 +45,5 @@ public class ErrorHandler {
         log.debug("Status is received 500 Internal server error {}", e.getMessage(), e);
         return new ErrorResponse(e.getMessage());
     }
+
 }
