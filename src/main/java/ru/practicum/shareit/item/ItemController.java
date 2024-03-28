@@ -2,14 +2,13 @@ package ru.practicum.shareit.item;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.comment.Comment;
-import ru.practicum.shareit.comment.dto.RequestComment;
+import ru.practicum.shareit.comment.dto.CommentDto;
 import ru.practicum.shareit.data.Constants;
 import ru.practicum.shareit.item.dto.CreateItemDto;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.Check;
+import ru.practicum.shareit.comment.dto.RequestComment;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -27,13 +26,13 @@ public class ItemController {
     }
 
     @PostMapping
-    public ItemDto createItem(@RequestHeader(Constants.TITLE_ITEM_BOOKING) Long userId, @RequestBody @Validated(Check.OnCreate.class) CreateItemDto createItemDto) {
+    public ItemDto createItem(@RequestHeader(Constants.TITLE_ITEM_BOOKING) Long userId, @Valid @RequestBody CreateItemDto createItemDto) {
         log.info("Получен запрос на добавление вещи");
         return itemService.createItem(userId, createItemDto);
     }
 
     @PatchMapping("/{itemId}")
-    public ItemDto updateItem(@RequestHeader(Constants.TITLE_ITEM_BOOKING) Long userId, @RequestBody @Validated(Check.class) CreateItemDto itemDto,
+    public ItemDto updateItem(@RequestHeader(Constants.TITLE_ITEM_BOOKING) Long userId, @RequestBody ItemDto itemDto,
                               @PathVariable("itemId") Long itemId) {
         log.info("Получен запрос на обновление информации о вещи");
         return itemService.updateItem(userId, itemDto, itemId);

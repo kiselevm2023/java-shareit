@@ -2,8 +2,11 @@ package ru.practicum.shareit.item.model;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import ru.practicum.shareit.comment.dto.ResponseComment;
+import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.comment.dto.CommentDto;
 import ru.practicum.shareit.booking.dto.BookingItemDto;
+import ru.practicum.shareit.comment.dto.ResponseComment;
+import ru.practicum.shareit.item.dto.ItemCommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.CreateItemDto;
 import ru.practicum.shareit.item.dto.ItemOwnerDto;
@@ -21,6 +24,42 @@ public class ItemMapper {
         itemDto.setAvailable(item.getAvailable());
         return itemDto;
     }
+
+    public static Item toItem(ItemDto itemDto, User user) {
+        Item item = new Item();
+        if (itemDto.getId() != 0) {
+            item.setId(itemDto.getId());
+        }
+        item.setName(itemDto.getName());
+        item.setDescription(itemDto.getDescription());
+        item.setAvailable(itemDto.getAvailable());
+        item.setOwner(user);
+        return item;
+    }
+
+    /*public static ItemCommentDto toItemCommentDto(ItemOwnerDto itemOwnerDto, List<CommentDto> comments) {
+        ItemCommentDto itemCommentDto = new ItemCommentDto();
+        itemCommentDto.setComments(comments);
+        itemCommentDto.setDescription(itemOwnerDto.getDescription());
+        itemCommentDto.setAvailable(itemOwnerDto.getAvailable());
+        itemCommentDto.setId(itemOwnerDto.getId());
+        itemCommentDto.setLastBooking(itemOwnerDto.getLastBooking());
+        itemCommentDto.setNextBooking(itemOwnerDto.getNextBooking());
+        itemCommentDto.setName(itemOwnerDto.getName());
+        return itemCommentDto;
+    }*/
+
+    /*public static ItemCommentDto toItemCommentDto(ItemDto itemDto, List<CommentDto> comments) {
+        ItemCommentDto itemCommentDto = new ItemCommentDto();
+        itemCommentDto.setComments(comments);
+        itemCommentDto.setDescription(itemDto.getDescription());
+        itemCommentDto.setAvailable(itemDto.getAvailable());
+        itemCommentDto.setId(itemDto.getId());
+        itemCommentDto.setLastBooking(itemDto.getLastBooking());
+        itemCommentDto.setNextBooking(itemDto.getNextBooking());
+        itemCommentDto.setName(itemDto.getName());
+        return itemCommentDto;
+    }*/
 
     public static Item createToItem(CreateItemDto createItemDto, User user) {
         Item item = new Item();
