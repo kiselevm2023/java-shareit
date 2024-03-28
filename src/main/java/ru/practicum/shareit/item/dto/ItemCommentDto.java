@@ -3,7 +3,6 @@ package ru.practicum.shareit.item.dto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
-import ru.practicum.shareit.comment.dto.CommentDto;
 import ru.practicum.shareit.comment.dto.ResponseComment;
 
 import java.util.List;
