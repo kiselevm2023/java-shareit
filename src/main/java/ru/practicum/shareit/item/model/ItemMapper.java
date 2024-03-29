@@ -22,42 +22,6 @@ public class ItemMapper {
         return itemDto;
     }
 
-    public static Item toItem(ItemDto itemDto, User user) {
-        Item item = new Item();
-        if (itemDto.getId() != 0) {
-            item.setId(itemDto.getId());
-        }
-        item.setName(itemDto.getName());
-        item.setDescription(itemDto.getDescription());
-        item.setAvailable(itemDto.getAvailable());
-        item.setOwner(user);
-        return item;
-    }
-
-    /*public static ItemCommentDto toItemCommentDto(ItemOwnerDto itemOwnerDto, List<CommentDto> comments) {
-        ItemCommentDto itemCommentDto = new ItemCommentDto();
-        itemCommentDto.setComments(comments);
-        itemCommentDto.setDescription(itemOwnerDto.getDescription());
-        itemCommentDto.setAvailable(itemOwnerDto.getAvailable());
-        itemCommentDto.setId(itemOwnerDto.getId());
-        itemCommentDto.setLastBooking(itemOwnerDto.getLastBooking());
-        itemCommentDto.setNextBooking(itemOwnerDto.getNextBooking());
-        itemCommentDto.setName(itemOwnerDto.getName());
-        return itemCommentDto;
-    }*/
-
-    /*public static ItemCommentDto toItemCommentDto(ItemDto itemDto, List<CommentDto> comments) {
-        ItemCommentDto itemCommentDto = new ItemCommentDto();
-        itemCommentDto.setComments(comments);
-        itemCommentDto.setDescription(itemDto.getDescription());
-        itemCommentDto.setAvailable(itemDto.getAvailable());
-        itemCommentDto.setId(itemDto.getId());
-        itemCommentDto.setLastBooking(itemDto.getLastBooking());
-        itemCommentDto.setNextBooking(itemDto.getNextBooking());
-        itemCommentDto.setName(itemDto.getName());
-        return itemCommentDto;
-    }*/
-
     public static Item createToItem(CreateItemDto createItemDto, User user) {
         Item item = new Item();
         item.setName(createItemDto.getName());

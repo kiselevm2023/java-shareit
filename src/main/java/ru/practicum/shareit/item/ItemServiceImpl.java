@@ -80,33 +80,6 @@ public class ItemServiceImpl implements ItemService {
         return getItemDtoWithBookingAndComments(item, ownerId);
     }
 
-    /* @Override
-    public ItemDto getItemById(long itemId, long userId) {
-        //log.info("ItemService: обработка запроса на поиск вещи с id {}", itemId);
-        //Item item = storage.findById(itemId).orElseThrow(() -> new NotFoundException(
-          //      String.format("Не удалось найти вещь с id %d", itemId)));
-        Item item = itemRepository.findByIdOrThrow(userId);
-        if (item.getOwner().getId() == userId) {
-            ItemDto itemDtoWithBookings = setLastAndNextBooking(item);
-            itemDtoWithBookings.setComments(CommentMapper.toCommentResponseDtoList(commentRepository.findAllByItemId(itemId)));
-            return itemDtoWithBookings;
-        }
-        ItemDto itemDtoWithBookings = ItemMapper.toItemResponseDtoWithBookings(item);
-        itemDtoWithBookings.setComments(CommentMapper.toCommentResponseDtoList(commentRepository.findAllByItemId(itemId)));
-        return itemDtoWithBookings;
-    }  */
-
-
-
-    /* @Override
-    public List<ItemDto> getAllItemForOwner(long ownerId) {
-        userRepository.findByIdOrThrow(ownerId);
-        List<Item> items = new ArrayList<>(itemRepository.findAllByOwnerIdOrderByIdAsc(ownerId));
-        return items.stream()
-                .map(item -> getItemDtoWithBookingAndComments(item, ownerId))
-                .collect(Collectors.toList());
-    } */
-
     @Override
     public List<ItemDto> getItemForBooker(String text, long userId) {
         userRepository.findByIdOrThrow(userId);
@@ -121,11 +94,8 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> getAllItemForOwner(long userId) {
-        /*log.info("ItemService: обработка запроса на поиск вещей пользователя с id {}", userId);
-        userStorage.findById(userId).orElseThrow(() -> new NotFoundException(
-                String.format("Пользователь с id %d не найден", userId)));*/
-        userRepository.findByIdOrThrow(userId);
 
+        userRepository.findByIdOrThrow(userId);
 
         Map<Long, Item> items = itemRepository.findAllByOwnerId(userId, Sort.by(ASC, "id")).stream()
                 .collect(Collectors.toMap(Item::getId, Function.identity()));
@@ -148,7 +118,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Comment createComment(long userId, RequestComment commentDto, long itemId) {
+    public ResponseComment createComment(long userId, RequestComment commentDto, long itemId) {
         validateComment(commentDto);
         Optional<User> userOptional = userRepository.findById(userId);
         validateUserFounded(userOptional);
@@ -158,8 +128,8 @@ public class ItemServiceImpl implements ItemService {
         if (bookings.isEmpty()) {
             throw new ValidationException("Пользователь не бронировал эту вещь");
         }
-        return commentRepository.save(CommentMapper
-                .requestToComment(commentDto, itemOptional.get(), userOptional.get().getName()));
+        Comment comment = CommentMapper.requestToComment(commentDto, itemOptional.get(), userOptional.get().getName());
+        return CommentMapper.toCommentResponseDto(commentRepository.save(comment));
     }
 
     private ItemDto getItemDtoWithBookingAndComments(Item item, long ownerId) {
