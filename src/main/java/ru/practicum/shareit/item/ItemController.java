@@ -33,7 +33,7 @@ public class ItemController {
     }
 
     @PatchMapping("/{itemId}")
-    public ItemDto updateItem(@RequestHeader(Constants.TITLE_ITEM_BOOKING) Long userId, @RequestBody @Validated(Check.class) ItemDto itemDto,
+    public ItemDto updateItem(@RequestHeader(Constants.TITLE_ITEM_BOOKING) Long userId, @RequestBody @Validated(Check.class) CreateItemDto itemDto,
                               @PathVariable("itemId") Long itemId) {
         log.info("Получен запрос на обновление информации о вещи");
         return itemService.updateItem(userId, itemDto, itemId);

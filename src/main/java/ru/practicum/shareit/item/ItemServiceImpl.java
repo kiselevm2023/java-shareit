@@ -50,7 +50,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDto updateItem(Long userId, ItemDto itemDto, Long itemId) {
+    public ItemDto updateItem(Long userId, CreateItemDto itemDto, Long itemId) {
         Optional<User> userOptional = userRepository.findByIdOrThrow(userId);
         Optional<Item> itemOptional = itemRepository.findByIdOrThrow(itemId);
         validateForOwner(userId, itemOptional.get().getOwner().getId(), itemId);
