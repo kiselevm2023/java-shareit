@@ -45,17 +45,14 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto createItem(Long userId, CreateItemDto createItemDto) {
-        Optional<User> userOpt = userRepository.findById(userId);
-        validateUserFounded(userOpt);
+        Optional<User> userOpt = userRepository.findByIdOrThrow(userId);
         return ItemMapper.toItemDto(itemRepository.save(ItemMapper.createToItem(createItemDto, userOpt.get())));
     }
 
     @Override
     public ItemDto updateItem(Long userId, ItemDto itemDto, Long itemId) {
-        Optional<User> userOptional = userRepository.findById(userId);
-        validateUserFounded(userOptional);
-        Optional<Item> itemOptional = itemRepository.findById(itemId);
-        validateFoundForItem(itemOptional);
+        Optional<User> userOptional = userRepository.findByIdOrThrow(userId);
+        Optional<Item> itemOptional = itemRepository.findByIdOrThrow(itemId);
         validateForOwner(userId, itemOptional.get().getOwner().getId(), itemId);
         Item oldItem = itemOptional.get();
         String newName = itemDto.getName();
@@ -75,8 +72,8 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto getItemById(long itemId, long ownerId) {
-        User user = userRepository.findByIdOrThrow(ownerId);
-        Item item = itemRepository.findByIdOrThrow(itemId);
+        User user = userRepository.searchByIdOrThrow(ownerId);
+        Item item = itemRepository.searchByIdOrThrow(itemId);
         return getItemDtoWithBookingAndComments(item, ownerId);
     }
 
@@ -109,21 +106,19 @@ public class ItemServiceImpl implements ItemService {
                         Sort.by(DESC, "start"))
                 .stream()
                 .collect(groupingBy(Booking::getItem));
-
+        LocalDateTime currentTime = LocalDateTime.now();
         return new ArrayList<>(items.values()).stream()
                 .map(item -> setItemComments(item, comments))
-                .peek(i -> i.setLastBooking(getLastBooking(bookings.get(items.get(i.getId())))))
-                .peek(i -> i.setNextBooking(getNextBooking(bookings.get(items.get(i.getId())))))
+                .peek(i -> i.setLastBooking(getLastBooking(bookings.get(items.get(i.getId())), currentTime)))
+                .peek(i -> i.setNextBooking(getNextBooking(bookings.get(items.get(i.getId())), currentTime)))
                 .collect(toList());
     }
 
     @Override
     public ResponseComment createComment(long userId, RequestComment commentDto, long itemId) {
         validateComment(commentDto);
-        Optional<User> userOptional = userRepository.findById(userId);
-        validateUserFounded(userOptional);
-        Optional<Item> itemOptional = itemRepository.findById(itemId);
-        validateFoundForItem(itemOptional);
+        Optional<User> userOptional = userRepository.findByIdOrThrow(userId);
+        Optional<Item> itemOptional = itemRepository.findByIdOrThrow(itemId);
         List<Booking> bookings = bookingRepository.findBookingByItem(itemId, userId, Sort.by(Sort.Direction.DESC, "start"));
         if (bookings.isEmpty()) {
             throw new ValidationException("Пользователь не бронировал эту вещь");
@@ -176,24 +171,24 @@ public class ItemServiceImpl implements ItemService {
         return ItemMapper.toItemResponseDtoWithBookings(item, CommentMapper.toCommentResponseDtoList(comments.get(item)));
     }
 
-    private BookingItemDto getLastBooking(List<Booking> bookings) {
+    private BookingItemDto getLastBooking(List<Booking> bookings, LocalDateTime currentTime) {
         if (bookings == null || bookings.isEmpty()) {
             return null;
         }
 
         Optional<Booking> lastBooking = bookings.stream()
-                .filter(booking -> booking.getStart().isBefore(LocalDateTime.now()))
+                .filter(booking -> booking.getStart().isAfter(currentTime)  || booking.getStart().isEqual(currentTime))
                 .max(Comparator.comparing(Booking::getStart));
         return lastBooking.map(BookingMapper::toBookingResponseDto).orElse(null);
     }
 
-    private BookingItemDto getNextBooking(List<Booking> bookings) {
+    private BookingItemDto getNextBooking(List<Booking> bookings, LocalDateTime currentTime ) {
         if (bookings == null || bookings.isEmpty()) {
             return null;
         }
 
         Optional<Booking> nextBooking = bookings.stream()
-                .filter(booking -> booking.getStart().isAfter(LocalDateTime.now()))
+                .filter(booking -> booking.getStart().isAfter(currentTime))
                 .min(Comparator.comparing(Booking::getStart));
         return nextBooking.map(BookingMapper::toBookingResponseDto).orElse(null);
     }

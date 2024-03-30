@@ -3,13 +3,25 @@ package ru.practicum.shareit.booking;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import ru.practicum.shareit.exception.NotFoundException;
+import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.User;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface BookingRepository extends JpaRepository<Booking, Long> {
 
-    List<Booking> findByBooker_IdOrderByStartDesc(long userId, Sort sort);
+    default Optional<Booking>  findByIdOrThrow(long id) {
+        return findById(id).map(Optional::of).orElseThrow(() -> new NotFoundException("Бронирование с id = " + id + " не найдено"));
+    }
+
+    default Booking searchByIdOrThrow(long id) {
+        return findById(id).orElseThrow(() -> new NotFoundException("Бронирование с id = " + id + " не найдено"));
+    }
+
+    List<Booking> findByBooker_Id(long userId, Sort sort);
 
     List<Booking> findAllByItemOwnerId(Long ownerId, Sort sort);
 
@@ -21,19 +33,19 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "CURRENT_TIME > b.end")
     List<Booking> getPastBooking(long userId, Sort sort);
 
-    List<Booking> findByBooker_IdAndStartAfterOrderByStartDesc(long userId, LocalDateTime startTime, Sort sort);
+    List<Booking> findByBooker_IdAndStartAfter(long userId, LocalDateTime startTime, Sort sort);
 
-    List<Booking> findByBooker_IdAndStatusOrderByStartDesc(long userId, Status status, Sort sort);
+    List<Booking> findByBooker_IdAndStatus(long userId, Status status, Sort sort);
 
-    List<Booking> findByItem_Owner_IdOrderByStartDesc(long userId, Sort sort);
+    List<Booking> findByItem_Owner_Id(long userId, Sort sort);
 
     @Query(value = "SELECT b FROM Booking AS b WHERE b.item.owner.id = ?1 AND " +
             "CURRENT_TIME BETWEEN b.start AND b.end")
     List<Booking> findCurrentBookerForOwner(long userId, Sort sort);
 
-    List<Booking> findByItem_Owner_IdAndStartAfterOrderByStartDesc(long userId, LocalDateTime time, Sort sort);
+    List<Booking> findByItem_Owner_IdAndStartAfter(long userId, LocalDateTime time, Sort sort);
 
-    List<Booking> findByItem_Owner_IdAndStatusOrderByStartDesc(long userId, Status status, Sort sort);
+    List<Booking> findByItem_Owner_IdAndStatus(long userId, Status status, Sort sort);
 
     @Query(value = "SELECT b FROM Booking b WHERE b.item.owner.id = ?1 AND " +
             "CURRENT_TIME > b.end")
@@ -55,7 +67,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "         FROM bookings b" +
             "        INNER JOIN items i ON i.id = b.item_id AND i.id=:itemId " +
             "        WHERE b.status !='REJECTED' " +
-            "          AND b.start_date < :dateTime " +
+            "          AND b.start_date <= :dateTime " +
             "        ORDER BY b.start_date DESC " +
             "        LIMIT 1;",
             nativeQuery = true)
