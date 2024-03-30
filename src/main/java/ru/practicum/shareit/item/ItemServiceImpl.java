@@ -79,7 +79,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> getItemForBooker(String text, long userId) {
-        userRepository.findByIdOrThrow(userId);
+        userRepository.searchByIdOrThrow(userId);
         if (text.isBlank()) {
             return List.of();
         }
@@ -91,7 +91,6 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> getAllItemForOwner(long userId) {
-
         userRepository.findByIdOrThrow(userId);
 
         Map<Long, Item> items = itemRepository.findAllByOwnerId(userId, Sort.by(ASC, "id")).stream()
@@ -138,18 +137,6 @@ public class ItemServiceImpl implements ItemService {
         BookingItemDto lastBooking = bookingService.getLastItemBooking(item.getId(), ownerId, currentTime);
         BookingItemDto nextBooking = bookingService.getNextItemBooking(item.getId(), ownerId, currentTime);
         return mapToItemDto(item, lastBooking, nextBooking, commentsDto == null ? List.of() : commentsDto);
-    }
-
-    private void validateFoundForItem(Optional<Item> itemOptional) {
-        if (itemOptional.isEmpty()) {
-            throw new NotFoundException("Вещь с данным id не найдена");
-        }
-    }
-
-    private void validateUserFounded(Optional<User> user) {
-        if (user.isEmpty()) {
-            throw new NotFoundException("Пользователь не найден");
-        }
     }
 
     private void validateForOwner(long userId, long ownerId, long itemId) {

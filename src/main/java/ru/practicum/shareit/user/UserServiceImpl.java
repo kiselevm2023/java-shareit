@@ -2,7 +2,6 @@ package ru.practicum.shareit.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
 
 import java.util.List;
@@ -51,11 +50,5 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(Long userId) {
         Optional<User> user = userRepository.findByIdOrThrow(userId);
         userRepository.deleteById(userId);
-    }
-
-    private void validateFoundForUser(Optional<User> user, long userId) {
-        if (user.isEmpty()) {
-            throw new NotFoundException("Пользователь не найден");
-        }
     }
 }

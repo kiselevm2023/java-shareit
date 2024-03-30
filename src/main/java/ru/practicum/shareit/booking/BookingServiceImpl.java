@@ -35,8 +35,6 @@ public class BookingServiceImpl implements BookingService {
     public BookingDto createBooking(CreateBookingDto createBookingDto, long userId) {
         Optional<User> userOptional = userRepository.findByIdOrThrow(userId);
         Optional<Item> itemOptional = itemRepository.findByIdOrThrow(createBookingDto.getItemId());
-        //validFoundForUser(userOptional);
-        //validFoundForItem(itemOptional);
         checkCorrectTime(createBookingDto.getStart(), createBookingDto.getEnd());
         validForAvailable(itemOptional);
         validForTime(itemOptional, createBookingDto);
@@ -49,10 +47,8 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingDto approvedBooking(long userId, long bookingId, boolean isApproved) {
-        userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("Пользователь с id = " + userId + " не найден"));
+        userRepository.searchByIdOrThrow(userId);
         Optional<Booking> bookingOptional = bookingRepository.findByIdOrThrow(bookingId);
-        //validFoundForBooking(bookingOptional);
         validFoundForBookerOrOwner(bookingOptional, userId);
         Booking booking = bookingOptional.get();
         validForStatus(booking);
@@ -69,18 +65,15 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingDto getBookingById(long userId, long bookingId) {
-        userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("Пользователь с id = " + userId + " не найден"));
+        userRepository.searchByIdOrThrow(userId);
         Optional<Booking> booking = bookingRepository.findByIdOrThrow(bookingId);
-        //validFoundForBooking(booking);
         validFoundForBookingForOwner(booking, userId);
         return BookingMapper.bookingToDto(booking.get());
     }
 
     @Override
     public List<BookingDto> getAllBookingForUser(long userId, String state) {
-        userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("Пользователь с id = " + userId + " не найден"));
+        userRepository.searchByIdOrThrow(userId);
         State bookingState = State.checkState(state);
         switch (bookingState) {
             case ALL:
@@ -113,9 +106,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<BookingDto> getAllBookingForOwner(long userId, String state) {
-
-        userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("Пользователь с id = " + userId + " не найден"));
+        userRepository.searchByIdOrThrow(userId);
         State bookingState = State.checkState(state);
         switch (bookingState) {
             case ALL:
@@ -168,18 +159,6 @@ public class BookingServiceImpl implements BookingService {
     private void validFoundForBookerOrOwner(Optional<Booking> booking, long userId) {
         if (!(booking.get().getBooker().getId() == userId || booking.get().getItem().getOwner().getId() == userId)) {
             throw new NotFoundException("Бронирование не найдено");
-        }
-    }
-
-    private void validFoundForUser(Optional<User> user) {
-        if (user.isEmpty()) {
-            throw new NotFoundException("Пользователь не найден");
-        }
-    }
-
-    private void validFoundForItem(Optional<Item> itemOptional) {
-        if (itemOptional.isEmpty()) {
-            throw new NotFoundException("Вещь с данным id не найдена");
         }
     }
 
