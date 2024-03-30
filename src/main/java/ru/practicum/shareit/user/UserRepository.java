@@ -1,6 +1,5 @@
 package ru.practicum.shareit.user;
 
-import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.exception.NotFoundException;
 import org.springframework.data.jpa.repository.JpaRepository;
 

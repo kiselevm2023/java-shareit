@@ -182,7 +182,7 @@ public class ItemServiceImpl implements ItemService {
         return lastBooking.map(BookingMapper::toBookingResponseDto).orElse(null);
     }
 
-    private BookingItemDto getNextBooking(List<Booking> bookings, LocalDateTime currentTime ) {
+    private BookingItemDto getNextBooking(List<Booking> bookings, LocalDateTime currentTime) {
         if (bookings == null || bookings.isEmpty()) {
             return null;
         }
