@@ -164,7 +164,7 @@ public class ItemServiceImpl implements ItemService {
         }
 
         Optional<Booking> lastBooking = bookings.stream()
-                .filter(booking -> booking.getStart().isBefore(currentTime))
+                .filter(booking -> !booking.getStart().isAfter(currentTime))
                 .max(Comparator.comparing(Booking::getStart));
         return lastBooking.map(BookingMapper::toBookingResponseDto).orElse(null);
     }

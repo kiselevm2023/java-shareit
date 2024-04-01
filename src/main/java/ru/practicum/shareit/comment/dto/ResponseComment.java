@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import java.time.LocalDateTime;
 
+import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 
 @RequiredArgsConstructor
@@ -12,7 +13,7 @@ public class ResponseComment {
 
     private Long id;
     private String text;
-    private Item item;
+    private ItemDto item;
     private String authorName;
     private LocalDateTime created;
 }

@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import ru.practicum.shareit.comment.dto.ResponseComment;
 import ru.practicum.shareit.comment.dto.RequestComment;
+import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 
 import java.time.LocalDateTime;
@@ -26,7 +27,12 @@ public class CommentMapper {
         ResponseComment commentDto = new ResponseComment();
         commentDto.setId(comment.getId());
         commentDto.setText(comment.getText());
-        commentDto.setItem(comment.getItem());
+
+        ItemDto item = new ItemDto();
+        item.setId(comment.getItem().getId());
+        item.setName(comment.getItem().getName());
+        commentDto.setItem(item);
+
         commentDto.setAuthorName(comment.getAuthorName());
         commentDto.setCreated(comment.getCreated());
         return commentDto;
@@ -46,6 +52,10 @@ public class CommentMapper {
         commentResponseDto.setText(comment.getText());
         commentResponseDto.setAuthorName(comment.getAuthorName());
         commentResponseDto.setCreated(comment.getCreated());
+        ItemDto item = new ItemDto();
+        item.setId(comment.getItem().getId());
+        item.setName(comment.getItem().getName());
+        commentResponseDto.setItem(item);
         return commentResponseDto;
     }
 
