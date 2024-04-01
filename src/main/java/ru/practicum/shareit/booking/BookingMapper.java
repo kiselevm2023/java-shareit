@@ -17,7 +17,7 @@ public class BookingMapper {
         BookingDto bookingDto = new BookingDto();
         bookingDto.setId(booking.getId());
 
-        UserDto booker = new UserDto ();
+        UserDto booker = new UserDto();
         booker.setId(booking.getBooker().getId());
         bookingDto.setBooker(booker);
 
@@ -50,7 +50,7 @@ public class BookingMapper {
         bookingResponseDto.setEnd(booking.getEnd());
         bookingResponseDto.setItemId(booking.getItem().getId());
 
-        UserDto booker = new UserDto ();
+        UserDto booker = new UserDto();
         booker.setId(booking.getBooker().getId());
         bookingResponseDto.setBooker(booker);
 
@@ -71,7 +71,7 @@ public class BookingMapper {
         bookingResponseDto.setEnd(booking.getEnd());
         bookingResponseDto.setItemId(booking.getItem().getId());
 
-        UserDto booker = new UserDto ();
+        UserDto booker = new UserDto();
         booker.setId(booking.getBooker().getId());
         bookingResponseDto.setBooker(booker);
 

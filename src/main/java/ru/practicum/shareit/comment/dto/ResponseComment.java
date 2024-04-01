@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import java.time.LocalDateTime;
 
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.model.Item;
 
 @RequiredArgsConstructor
 @Data
