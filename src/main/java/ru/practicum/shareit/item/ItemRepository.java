@@ -1,18 +1,33 @@
 package ru.practicum.shareit.item;
 
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.model.Item;
 
+
 import java.util.List;
+import java.util.Optional;
 
-public interface ItemRepository {
+public interface ItemRepository extends JpaRepository<Item, Long> {
 
-    Item createItem(Long userId, Item item);
+    List<Item> findAllByOwnerIdOrderByIdAsc(long ownerId);
 
-    Item updateItem(long userId, Item item, long itemId);
+    default Optional<Item>  findByIdOrThrow(long itemId) {
+        return findById(itemId).map(Optional::of).orElseThrow(() -> new NotFoundException("Вещь с id = " + itemId + " не найдена"));
+    }
 
-    List<Item> getAllItemForOwner(Long userId);
+    default Item searchByIdOrThrow(long itemId) {
+        return findById(itemId).orElseThrow(() -> new NotFoundException("Вещь с id = " + itemId + " не найдена"));
+    }
 
-    List<Item> searchItem(String text);
+    List<Item> findByOwner_id(long userId);
 
-    Item getItemById(Long itemId);
+    @Query(value = "SELECT i FROM Item AS i WHERE ((UPPER(i.name) LIKE UPPER(CONCAT('%', ?1, '%')) " +
+                "OR UPPER(i.description) LIKE UPPER(CONCAT('%', ?1, '%'))) AND i.available IS TRUE)")
+    List<Item> getItemForBooker(String text);
+
+    List<Item> findAllByOwnerId(Long ownerId, Sort sort);
+
 }

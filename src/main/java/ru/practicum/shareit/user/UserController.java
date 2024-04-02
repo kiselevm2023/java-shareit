@@ -9,8 +9,6 @@ import ru.practicum.shareit.user.dto.UserDto;
 
 import java.util.List;
 
-
-
 @RestController
 @Slf4j
 @RequestMapping(path = "/users")
@@ -25,13 +23,13 @@ public class UserController {
 
     @GetMapping
     public List<UserDto> getUsers() {
-        log.info("Request is received to get all users");
+        log.info("Получен запрос на получение всех пользователей");
         return userService.getUsers();
     }
 
     @GetMapping("/{userId}")
     public UserDto getUserById(@PathVariable("userId") Long userId) {
-        log.info("Request is received to get a user");
+        log.info("Получен запрос на получение всех пользователей");
         return userService.getUserById(userId);
     }
 
@@ -49,7 +47,7 @@ public class UserController {
 
     @DeleteMapping("/{userId}")
     public void deleteUser(@PathVariable("userId") Long userId) {
-        log.info("Request is received to delete a user");
+        log.info("Получен запрос на удаление пользователя");
         userService.deleteUser(userId);
     }
 }
