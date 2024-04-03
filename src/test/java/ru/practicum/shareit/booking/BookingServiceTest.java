@@ -8,7 +8,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.CreateBookingDto;
-import ru.practicum.shareit.comment.dto.CommentDto;
 import ru.practicum.shareit.comment.dto.RequestComment;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
@@ -193,7 +192,7 @@ public class BookingServiceTest {
         bookingDto1.setEnd(LocalDateTime.now().plusSeconds(2));
         BookingDto bookingDtoCreate1 = bookingService.createBooking(bookingDto1, userDtoCreate1.getId());
         bookingService.approvedBooking(userDtoCreate2.getId(), bookingDtoCreate1.getId(), true);
-        CreateBookingDto  bookingDto2 = new CreateBookingDto ();
+        CreateBookingDto  bookingDto2 = new CreateBookingDto();
         bookingDto2.setItemId(itemDtoCreate.getId());
         bookingDto2.setStart(LocalDateTime.now().plusSeconds(1));
         bookingDto2.setEnd(LocalDateTime.now().plusSeconds(2));
@@ -245,7 +244,7 @@ public class BookingServiceTest {
         UserDto userDtoCreate1 = userService.createUser(userDto1);
         UserDto userDtoCreate2 = userService.createUser(userDto2);
         ItemDto itemDtoCreate = itemService.createItem(userDtoCreate2.getId(), itemDto2);
-        CreateBookingDto  bookingDto = new CreateBookingDto ();
+        CreateBookingDto  bookingDto = new CreateBookingDto();
         bookingDto.setItemId(itemDtoCreate.getId());
         bookingDto.setStart(LocalDateTime.now().plusSeconds(1));
         bookingDto.setEnd(LocalDateTime.now().plusSeconds(2));

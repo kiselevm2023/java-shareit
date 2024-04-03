@@ -10,7 +10,6 @@ import ru.practicum.shareit.booking.BookingService;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.CreateBookingDto;
 import ru.practicum.shareit.comment.Comment;
-import ru.practicum.shareit.comment.dto.CommentDto;
 import ru.practicum.shareit.comment.dto.RequestComment;
 import ru.practicum.shareit.comment.dto.ResponseComment;
 import ru.practicum.shareit.exception.NotFoundException;

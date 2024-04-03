@@ -45,8 +45,7 @@ public class ItemControllerTest {
     private Item item = new Item();
     private User user = new User();
 
-    private final ItemDto item2= new ItemDto();
-
+    private final ItemDto item2 = new ItemDto();
 
     @BeforeEach
     void setUp() {
