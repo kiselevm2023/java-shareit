@@ -30,4 +30,6 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 
     List<Item> findAllByOwnerId(Long ownerId, Sort sort);
 
+    @Query(value = "SELECT i FROM Item AS i WHERE i.requestId = ?1")
+    List<Item> findByRequestId(long requestId);
 }
