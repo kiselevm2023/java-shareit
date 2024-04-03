@@ -1,6 +1,8 @@
 package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.Booking;
@@ -78,18 +80,18 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> getItemForBooker(String text, long userId) {
+    public List<ItemDto> getItemForBooker(String text, long userId, int from, int size) {
         userRepository.searchByIdOrThrow(userId);
         if (text.isBlank()) {
             return List.of();
         }
-        return itemRepository.getItemForBooker(text.toLowerCase().trim())
+        return itemRepository.getItemForBooker(text.toLowerCase().trim(), PageRequest.of(from, size))
                 .stream()
                 .map(ItemMapper::toItemDto)
                 .collect(Collectors.toList());
     }
 
-    @Override
+    /*@Override
     public List<ItemDto> getAllItemForOwner(long userId) {
         userRepository.findByIdOrThrow(userId);
 
@@ -111,7 +113,38 @@ public class ItemServiceImpl implements ItemService {
                 .peek(i -> i.setLastBooking(getLastBooking(bookings.get(items.get(i.getId())), currentTime)))
                 .peek(i -> i.setNextBooking(getNextBooking(bookings.get(items.get(i.getId())), currentTime)))
                 .collect(toList());
+    } */
+
+    //
+
+    @Override
+    public List<ItemDto> getAllItemForOwner(int from, int size, long userId) {
+        userRepository.findByIdOrThrow(userId);
+        PageRequest pageRequest = PageRequest.of((from / size), size, Sort.by(ASC, "id"));
+
+        Map<Long, Item> items = itemRepository.findAllByOwnerId(userId, pageRequest).getContent().stream()
+                .collect(Collectors.toMap(Item::getId, Function.identity()));
+
+        Map<Item, List<Comment>> comments = commentRepository.findByItemIn(new ArrayList<>(items.values()),
+                        Sort.by(DESC, "created"))
+                .stream()
+                .collect(groupingBy(Comment::getItem, toList()));
+
+        Map<Item, List<Booking>> bookings = bookingRepository.findAllByItemOwnerId(userId,
+                        Sort.by(DESC, "startDate"))
+                .stream()
+                .collect(groupingBy(Booking::getItem));
+
+        LocalDateTime currentTime = LocalDateTime.now();
+        return new ArrayList<>(items.values()).stream()
+                .map(item -> setItemComments(item, comments))
+                .peek(i -> i.setLastBooking(getLastBooking(bookings.get(items.get(i.getId())), currentTime)))
+                .peek(i -> i.setNextBooking(getNextBooking(bookings.get(items.get(i.getId())), currentTime)))
+                .collect(toList());
     }
+
+
+
 
     @Override
     public ResponseComment createComment(long userId, RequestComment commentDto, long itemId) {

@@ -40,16 +40,20 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<ItemDto> getAllItemForOwner(@RequestHeader(Constants.TITLE_ITEM_BOOKING) Long userId) {
+    public List<ItemDto> getAllItemForOwner(@RequestHeader(Constants.TITLE_ITEM_BOOKING) Long userId,
+                                   @RequestParam(value = "from", defaultValue = "0") int from,
+                                   @RequestParam(value = "size", defaultValue = "100") int size) {
         log.info("Владелец запросил список своих вещей");
-        return itemService.getAllItemForOwner(userId);
+        return itemService.getAllItemForOwner(from, size, userId);
     }
 
     @GetMapping("/search")
     public List<ItemDto> searchItem(@RequestHeader(Constants.TITLE_ITEM_BOOKING) Long userId,
-                                    @RequestParam(name = "text", defaultValue = "") String text) {
+                                    @RequestParam(name = "text", defaultValue = "") String text,
+                                    @RequestParam(value = "from", defaultValue = "0") int from,
+                                    @RequestParam(value = "size", defaultValue = "100") int size) {
         log.info("Запрос на поиск вещи по содержанию");
-        return itemService.getItemForBooker(text, userId);
+        return itemService.getItemForBooker(text, userId, from, size);
     }
 
     @GetMapping("/{itemId}")
