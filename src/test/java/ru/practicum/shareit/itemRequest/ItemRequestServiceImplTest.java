@@ -179,7 +179,7 @@ public class ItemRequestServiceImplTest {
         UserDto userDtoCreate2 = userService.createUser(userDto2);
         RequestDto itemRequestCreate =
                 requestService.createRequest(itemRequestDto, userDtoCreate1.getId());
-        ItemDto itemDtoCreate1 = itemService.createItem(userDtoCreate2.getId(), itemDto1);
+        ItemDto itemDtoCreate1 = itemService.createItem(userDtoCreate1.getId(), itemDto1);
         TypedQuery<Request> createItemRequest =
                 em.createQuery("SELECT r FROM Request r WHERE r.id = :id", Request.class);
         List<Request> items = createItemRequest.setParameter("id", itemRequestCreate.getId()).getResultList();
