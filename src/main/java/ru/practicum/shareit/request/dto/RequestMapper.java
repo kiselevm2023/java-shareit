@@ -1,6 +1,10 @@
 package ru.practicum.shareit.request.dto;
 
+import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.request.model.Request;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class RequestMapper {
 

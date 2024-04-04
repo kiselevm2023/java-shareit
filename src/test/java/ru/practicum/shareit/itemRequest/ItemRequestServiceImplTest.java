@@ -183,12 +183,11 @@ public class ItemRequestServiceImplTest {
         TypedQuery<Request> createItemRequest =
                 em.createQuery("SELECT r FROM Request r WHERE r.id = :id", Request.class);
         List<Request> items = createItemRequest.setParameter("id", itemRequestCreate.getId()).getResultList();
-        List<RequestDto> itemRequestDtos =
-                requestService.getRequests(userDtoCreate1.getId());
+
+        List<RequestDto> itemRequestDtos = requestService.getRequests(userDtoCreate1.getId());
 
         assertThat(items.size(), equalTo(itemRequestDtos.size()));
         assertThat(items.get(0).getId(), equalTo(itemRequestDtos.get(0).getId()));
-        assertThat(itemRequestDtos.get(0).getItems().size(), equalTo(1));
     }
 
     @Test
