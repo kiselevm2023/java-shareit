@@ -40,8 +40,8 @@ public class UserServiceTest {
 
     @Test
     void getUserById() throws Exception {
-        //User user = new User();
-        Mockito.when(userRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(user));
+
+        Mockito.when(userRepository.findByIdOrThrow(Mockito.anyLong())).thenReturn(Optional.of(user));
         UserDto userDto = userService.getUserById(1L);
 
         assertThat(userDto.getName(), equalTo(user.getName()));
@@ -49,7 +49,7 @@ public class UserServiceTest {
 
     @Test
     void getUserByWrongId() throws Exception {
-        Mockito.when(userRepository.findById(Mockito.anyLong()))
+        Mockito.when(userRepository.findByIdOrThrow(Mockito.anyLong()))
                 .thenThrow(new NotFoundException("Пользователь не найден"));
 
         NotFoundException notFoundException = assertThrows(NotFoundException.class,
