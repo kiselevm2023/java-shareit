@@ -1,6 +1,7 @@
 package ru.practicum.shareit.user;
 
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -25,12 +26,21 @@ public class UserServiceTest {
     private UserRepository userRepository;
     @InjectMocks
     private UserServiceImpl userService;
+    private User user;
     @Autowired
     private MockMvc mockMvc;
 
+    @BeforeEach
+    public void setUp() {
+        user = new User();
+        user.setId(1L);
+        user.setName("user");
+        user.setEmail("user@user.com");
+    }
+
     @Test
     void getUserById() throws Exception {
-        User user = new User();
+        //User user = new User();
         Mockito.when(userRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(user));
         UserDto userDto = userService.getUserById(1L);
 
