@@ -96,7 +96,7 @@ public class UserServiceImplTest {
         try {
             userService.getUserById(100L);
         } catch (NotFoundException e) {
-            assertThat(e.getMessage(), equalTo("Пользователь не найден"));
+            assertThat(e.getMessage(), equalTo("Пользователь с id = 100 не найден"));
         }
     }
 
