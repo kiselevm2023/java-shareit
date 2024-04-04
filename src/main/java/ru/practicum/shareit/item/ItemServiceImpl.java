@@ -130,7 +130,7 @@ public class ItemServiceImpl implements ItemService {
                 .collect(groupingBy(Comment::getItem, toList()));
 
         Map<Item, List<Booking>> bookings = bookingRepository.findAllByItemOwnerId(userId,
-                        Sort.by(DESC, "startDate"))
+                        Sort.by(DESC, "start"))
                 .stream()
                 .collect(groupingBy(Booking::getItem));
 
