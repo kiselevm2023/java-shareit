@@ -93,7 +93,7 @@ public class ItemServiceTest {
                         .createItem(userDtoCreate.getId() + 10, itemDto1));
 
         assertThat(validationExceptionWithWrongId.getMessage(),
-                equalTo("Пользователь не найден"));
+                equalTo("Пользователь с id = 11 не найден"));
     }
 
     @Test
@@ -137,7 +137,7 @@ public class ItemServiceTest {
         NotFoundException notFoundExceptionWithWrongIdItem = assertThrows(NotFoundException.class,
                 () -> itemService.updateItem(userDtoCreate.getId(), itemDto2, itemDtoCreate.getId() + 5));
         assertThat(notFoundExceptionWithWrongIdItem.getMessage(),
-                equalTo("Вещь с данным id не найдена"));
+                equalTo("Вещь с id = 6 не найдена"));
     }
 
     @Test
@@ -148,7 +148,7 @@ public class ItemServiceTest {
         NotFoundException notFoundExceptionWithWrongIdUser = assertThrows(NotFoundException.class,
                 () -> itemService.updateItem(userDtoCreate.getId() + 5, itemDto2, itemDtoCreate.getId()));
         assertThat(notFoundExceptionWithWrongIdUser.getMessage(),
-                equalTo("Пользователь не найден"));
+                equalTo("Пользователь с id = 6 не найден"));
     }
 
     @Test
@@ -202,7 +202,7 @@ public class ItemServiceTest {
         NotFoundException validationExceptionWithWrongId = assertThrows(NotFoundException.class,
                 () -> itemService.createComment(userDtoCreate1.getId() + 10, commentDto1, itemDtoCreate.getId()));
         assertThat(validationExceptionWithWrongId.getMessage(),
-                equalTo("Пользователь не найден"));
+                equalTo("Пользователь с id = 11 не найден"));
     }
 
     @Test
@@ -220,7 +220,7 @@ public class ItemServiceTest {
         NotFoundException notFoundExceptionWithWrongIdItem = assertThrows(NotFoundException.class,
                 () -> itemService.createComment(userDtoCreate1.getId(), commentDto1, itemDtoCreate.getId() + 10));
         assertThat(notFoundExceptionWithWrongIdItem.getMessage(),
-                equalTo("Вещь с данным id не найдена"));
+                equalTo("Вещь с id = 11 не найдена"));
     }
 
     @Test
@@ -336,7 +336,7 @@ public class ItemServiceTest {
         NotFoundException notFoundExceptionIncorrectIdItem = assertThrows(NotFoundException.class,
                 () -> itemService.createComment(userDtoCreate1.getId(), commentDto1, itemDtoCreate.getId() + 5));
         assertThat(notFoundExceptionIncorrectIdItem.getMessage(),
-                equalTo("Вещь с данным id не найдена"));
+                equalTo("Вещь с id = 6 не найдена"));
     }
 
     @Test

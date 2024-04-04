@@ -37,8 +37,9 @@ public class ItemControllerTest {
     private MockMvc mockMvc;
     @Autowired
     ObjectMapper mapper;
-    private final CreateItemDto itemDto1 = new CreateItemDto();
+    private final ItemDto itemDto1 = new ItemDto();
     private final ItemDto itemDto2 = new ItemDto();
+    private final CreateItemDto itemDto3 = new CreateItemDto();
     private final ResponseComment commentDto = new ResponseComment();
     private final UserDto userDto = new UserDto();
     private final List<ItemDto> itemDtos = new ArrayList<>();
@@ -50,17 +51,21 @@ public class ItemControllerTest {
     @BeforeEach
     void setUp() {
         itemDto1.setId(1);
-        itemDto1.setDescription("TestItem1Desc");
-        itemDto1.setName("TestItem1Name");
+        itemDto1.setDescription("TestItemDesc");
+        itemDto1.setName("TestItemName");
         itemDto1.setAvailable(true);
         itemDto2.setId(1);
-        itemDto2.setDescription(null);
-        itemDto2.setName("TestItem2Name");
+        itemDto2.setDescription("TestItemDesc");
+        itemDto2.setName("TestItemName");
         itemDto2.setAvailable(true);
+        itemDto3.setId(1);
+        itemDto3.setDescription("TestItemDesc");
+        itemDto3.setName("TestItemName");
+        itemDto3.setAvailable(true);
         userDto.setEmail("test@mail.ru");
         userDto.setId(1);
         userDto.setName("Test");
-        item = ItemMapper.createToItem(itemDto1, user);
+        item = ItemMapper.createToItem(itemDto3, user);
         user = UserMapper.toUser(userDto);
         commentDto.setCreated(LocalDateTime.now().withNano(0));
         commentDto.setText("Test comment");
@@ -73,7 +78,7 @@ public class ItemControllerTest {
         commentResponseDto.setItem(item); */
 
         commentDto.setItem(item2);
-        //itemDtos.add(itemDto1);
+        itemDtos.add(itemDto1);
     }
 
     @Test
