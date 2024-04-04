@@ -10,6 +10,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.shareit.comment.dto.CommentDto;
+import ru.practicum.shareit.comment.dto.ResponseComment;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.dto.CreateItemDto;
@@ -39,9 +40,9 @@ public class ItemControllerTest {
     ObjectMapper mapper;
     private final CreateItemDto itemDto1 = new CreateItemDto();
     private final ItemDto itemDto2 = new ItemDto();
-    private final CommentDto commentDto = new CommentDto();
+    private final ResponseComment commentDto = new ResponseComment();
     private final UserDto userDto = new UserDto();
-    private final List<CreateItemDto> itemDtos = new ArrayList<>();
+    private final List<ItemDto> itemDtos = new ArrayList<>();
     private Item item = new Item();
     private User user = new User();
 
@@ -67,18 +68,18 @@ public class ItemControllerTest {
         commentDto.setId(1L);
         commentDto.setAuthorName("Test name");
 
-        /*ItemDto item = new ItemDto();
+        /* ItemDto item = new ItemDto();
         item.setId(comment.getItem().getId());
         item.setName(comment.getItem().getName());
-        commentResponseDto.setItem(item);*/
+        commentResponseDto.setItem(item); */
 
         commentDto.setItem(item2);
-        itemDtos.add(itemDto1);
+        //itemDtos.add(itemDto1);
     }
 
     @Test
     void createItem() throws Exception {
-        Mockito.when(itemService.createItem(Mockito.anyLong(), Mockito.any())).thenReturn(itemDto1);
+        Mockito.when(itemService.createItem(Mockito.anyLong(), Mockito.any())).thenReturn(itemDto2);
         mockMvc.perform(post("/items")
                         .content(mapper.writeValueAsString(itemDto1))
                         .characterEncoding(StandardCharsets.UTF_8)
@@ -110,7 +111,7 @@ public class ItemControllerTest {
 
     @Test
     void getItemById() throws Exception {
-        Mockito.when(itemService.getItemById(Mockito.anyLong(), Mockito.anyLong())).thenReturn(itemDto1);
+        Mockito.when(itemService.getItemById(Mockito.anyLong(), Mockito.anyLong())).thenReturn(itemDto2);
         mockMvc.perform(get("/items/{itemId}", 1)
                         .header("X-Sharer-User-Id", 1))
                 .andExpect(status().isOk())
@@ -121,7 +122,7 @@ public class ItemControllerTest {
     }
 
     @Test
-    void getItemByOwner() throws Exception {
+    void getAllItemForOwner() throws Exception {
         Mockito.when(itemService.getAllItemForOwner(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyLong()))
                 .thenReturn(itemDtos);
         mockMvc.perform(get("/items")
@@ -155,7 +156,7 @@ public class ItemControllerTest {
     void updateItem() throws Exception {
         Mockito.when(itemService
                         .updateItem(Mockito.anyLong(), Mockito.any(), Mockito.anyLong()))
-                .thenReturn(itemDto1);
+                .thenReturn(itemDto2);
         mockMvc.perform(patch("/items/{itemId}", 1)
                         .content(mapper.writeValueAsString(itemDto1))
                         .characterEncoding(StandardCharsets.UTF_8)

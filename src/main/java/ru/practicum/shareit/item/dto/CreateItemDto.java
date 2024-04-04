@@ -22,4 +22,5 @@ public class CreateItemDto {
     private String description;
     @NotNull(groups = {Check.OnCreate.class}, message = "поле available пустое")
     private Boolean available;
+    private long requestId;
 }
