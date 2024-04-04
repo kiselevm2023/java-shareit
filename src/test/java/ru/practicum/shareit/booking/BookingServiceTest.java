@@ -104,8 +104,8 @@ public class BookingServiceTest {
         ItemDto itemDtoCreate = itemService.createItem(userDtoCreate2.getId(), itemDto2);
         CreateBookingDto bookingDtoWrong = new CreateBookingDto();
         bookingDtoWrong.setItemId(itemDtoCreate.getId());
-        bookingDtoWrong.setStart(LocalDateTime.now());
-        bookingDtoWrong.setEnd(LocalDateTime.now().plusSeconds(2));
+        bookingDtoWrong.setStart(LocalDateTime.now().plusSeconds(2));
+        bookingDtoWrong.setEnd(LocalDateTime.now());
         ValidationException validationExceptionIncorrectTime = assertThrows(ValidationException.class,
                 () -> bookingService.createBooking(bookingDtoWrong, userDtoCreate1.getId()));
         assertThat(validationExceptionIncorrectTime.getMessage(),
@@ -145,7 +145,7 @@ public class BookingServiceTest {
         NotFoundException notFoundExceptionIncorrectUserId = assertThrows(NotFoundException.class,
                 () -> bookingService.createBooking(bookingDto, userDtoCreate1.getId() + 10));
         assertThat(notFoundExceptionIncorrectUserId.getMessage(),
-                equalTo("Пользователь не найден"));
+                equalTo("Пользователь с id = 11 не найден"));
     }
 
     @Test
@@ -161,7 +161,7 @@ public class BookingServiceTest {
         NotFoundException notFoundExceptionIncorrectItemId = assertThrows(NotFoundException.class,
                 () -> bookingService.createBooking(bookingDto, userDtoCreate1.getId()));
         assertThat(notFoundExceptionIncorrectItemId.getMessage(),
-                equalTo("Вещь с данным id не найдена"));
+                equalTo("Вещь с id = 6 не найдена"));
     }
 
     @Test
@@ -290,7 +290,7 @@ public class BookingServiceTest {
                 () -> bookingService
                         .approvedBooking(userDtoCreate2.getId(), bookingDtoCreate1.getId() + 5, true));
         assertThat(validationExceptionIncorrectBookingId.getMessage(),
-                equalTo("Бронирование не найдено"));
+                equalTo("Бронирование с id = 6 не найдено"));
     }
 
     @Test
@@ -467,6 +467,6 @@ public class BookingServiceTest {
         NotFoundException validationExceptionIncorrectBookingId = assertThrows(NotFoundException.class,
                 () -> bookingService.getBookingById(userDtoCreate1.getId(), bookingDtoCreate1.getId() + 5));
         assertThat(validationExceptionIncorrectBookingId.getMessage(),
-                equalTo("Бронирование не найдено"));
+                equalTo("Бронирование с id = 6 не найдено"));
     }
 }
