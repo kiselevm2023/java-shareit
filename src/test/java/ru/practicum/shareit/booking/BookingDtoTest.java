@@ -25,7 +25,8 @@ public class BookingDtoTest {
         bookingDto.setEnd(LocalDateTime.now().plusSeconds(5).truncatedTo(ChronoUnit.SECONDS));
         bookingDto.setStart(LocalDateTime.now().plusSeconds(4).truncatedTo(ChronoUnit.SECONDS));
         bookingDto.setItemId(1);
-        bookingDto.setBooker(new User());
+        bookingDto.setBooker(new UserDto());
+        bookingDto.setItem(new ItemDto());
         bookingDto.setId(1);
         JsonContent<BookingDto> result = json.write(bookingDto);
         assertThat(result)
