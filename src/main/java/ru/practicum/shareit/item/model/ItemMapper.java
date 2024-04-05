@@ -40,6 +40,9 @@ public class ItemMapper {
         itemDto.setLastBooking(lastBooking);
         itemDto.setNextBooking(nextBooking);
         itemDto.setComments(commentsDto);
+        if (item.getItemRequest() != null) {
+            itemDto.setRequestId(item.getItemRequest().getId());
+        }
         return itemDto;
     }
 
@@ -49,6 +52,9 @@ public class ItemMapper {
         itemDtoWithBookings.setName(item.getName());
         itemDtoWithBookings.setDescription(item.getDescription());
         itemDtoWithBookings.setAvailable(item.getAvailable());
+        if (item.getItemRequest() != null) {
+            itemDtoWithBookings.setRequestId(item.getItemRequest().getId());
+        }
         return itemDtoWithBookings;
     }
 
@@ -59,6 +65,9 @@ public class ItemMapper {
         itemDtoWithBookings.setDescription(item.getDescription());
         itemDtoWithBookings.setAvailable(item.getAvailable());
         itemDtoWithBookings.setComments(comments);
+        if (item.getItemRequest() != null) {
+            itemDtoWithBookings.setRequestId(item.getItemRequest().getId());
+        }
         return itemDtoWithBookings;
     }
 }
