@@ -1,34 +1,28 @@
 package ru.practicum.shareit.request.dto;
 
+import lombok.experimental.UtilityClass;
 import ru.practicum.shareit.request.model.Request;
+import ru.practicum.shareit.user.User;
 
+@UtilityClass
 public class RequestMapper {
-
-    public static RequestDto requestToDto(Request request) {
-
-        RequestDto requestDto = new RequestDto();
-        requestDto.setId(request.getId());
-        requestDto.setName(request.getName());
-        requestDto.setDescription(request.getDescription());
-        requestDto.setCreated(request.getCreated());
-        requestDto.setItemId(request.getItemId());
-        requestDto.setAvailable(request.isAvailable());
-        requestDto.setUserId(request.getUserId());
-        return requestDto;
+    public Request toRequest(ItemRequestDto itemRequestRequestDto, User author) {
+        if (itemRequestRequestDto == null)
+            return null;
+        Request itemRequest = new Request();
+        itemRequest.setAuthor(author);
+        itemRequest.setDescription(itemRequestRequestDto.getDescription());
+        itemRequest.setCreated(itemRequestRequestDto.getCreated());
+        return itemRequest;
     }
 
-    public static Request toRequest(RequestDto requestDto) {
-
-        Request request = new Request();
-        if (requestDto.getId() != 0) {
-            request.setId(requestDto.getId());
-        }
-        request.setName(requestDto.getName());
-        request.setDescription(requestDto.getDescription());
-        request.setCreated(requestDto.getCreated());
-        request.setItemId(requestDto.getItemId());
-        request.setAvailable(requestDto.isAvailable());
-        request.setUserId(requestDto.getUserId());
-        return request;
+    public RequestDto requestToDto(Request itemRequest) {
+        if (itemRequest == null)
+            return null;
+        RequestDto responseDto = new RequestDto();
+        responseDto.setId(itemRequest.getId());
+        responseDto.setDescription(itemRequest.getDescription());
+        responseDto.setCreated(itemRequest.getCreated());
+        return responseDto;
     }
 }

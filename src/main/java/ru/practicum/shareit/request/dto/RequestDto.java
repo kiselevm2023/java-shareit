@@ -3,6 +3,7 @@ package ru.practicum.shareit.request.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 
 import javax.persistence.*;
@@ -22,8 +23,7 @@ public class RequestDto {
     private String description;
     private LocalDateTime created;
     private int itemId;
-    private boolean available;
     private long userId;
     @Transient
-    private List<Item> items = new ArrayList<>();
+    private List<ItemDto> items;
 }

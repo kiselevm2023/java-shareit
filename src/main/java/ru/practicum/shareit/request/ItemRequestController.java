@@ -3,6 +3,7 @@ package ru.practicum.shareit.request;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.RequestDto;
 
 import javax.validation.Valid;
@@ -22,7 +23,7 @@ public class ItemRequestController {
 
     @PostMapping
     public RequestDto createRequest(@RequestHeader("X-Sharer-User-Id") long userId,
-                                    @Valid @RequestBody RequestDto requestDto) {
+                                    @Valid @RequestBody ItemRequestDto requestDto) {
         log.info("Получен запрос на создание запроса о бронировании");
         return requestService.createRequest(requestDto, userId);
     }
