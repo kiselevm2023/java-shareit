@@ -10,6 +10,7 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.user.dto.UserDto;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -21,19 +22,18 @@ public class BookingDtoTest {
     @Test
     void testItemDto() throws Exception {
         BookingDto bookingDto = new BookingDto();
-        bookingDto.setEnd(LocalDateTime.now().plusSeconds(5));
-        bookingDto.setStart(LocalDateTime.now().plusSeconds(4));
+        bookingDto.setEnd(LocalDateTime.now().plusSeconds(5).truncatedTo(ChronoUnit.SECONDS));
+        bookingDto.setStart(LocalDateTime.now().plusSeconds(4).truncatedTo(ChronoUnit.SECONDS));
         bookingDto.setItemId(1);
-        bookingDto.setBooker(new UserDto());
-        bookingDto.setItem(new ItemDto());
+        bookingDto.setBooker(new User());
         bookingDto.setId(1);
         JsonContent<BookingDto> result = json.write(bookingDto);
         assertThat(result)
                 .extractingJsonPathStringValue("$.end")
-                .isEqualTo(bookingDto.getEnd().toString());
+                .isEqualTo(bookingDto.getEnd().truncatedTo(ChronoUnit.SECONDS).toString());
         assertThat(result)
                 .extractingJsonPathStringValue("$.start")
-                .isEqualTo(bookingDto.getStart().toString());
+                .isEqualTo(bookingDto.getStart().truncatedTo(ChronoUnit.SECONDS).toString());
         assertThat(result).extractingJsonPathNumberValue("$.id").isEqualTo(1);
         assertThat(result).extractingJsonPathNumberValue("$.itemId").isEqualTo(1);
     }
