@@ -22,8 +22,8 @@ public class BookingDtoTest {
     @Test
     void testItemDto() throws Exception {
         BookingDto bookingDto = new BookingDto();
-        bookingDto.setEnd(LocalDateTime.now().plusSeconds(5).truncatedTo(ChronoUnit.SECONDS));
-        bookingDto.setStart(LocalDateTime.now().plusSeconds(4).truncatedTo(ChronoUnit.SECONDS));
+        bookingDto.setEnd(LocalDateTime.now().plusSeconds(5));
+        bookingDto.setStart(LocalDateTime.now().plusSeconds(4));
         bookingDto.setItemId(1);
         bookingDto.setBooker(new UserDto());
         bookingDto.setItem(new ItemDto());
@@ -31,10 +31,10 @@ public class BookingDtoTest {
         JsonContent<BookingDto> result = json.write(bookingDto);
         assertThat(result)
                 .extractingJsonPathStringValue("$.end")
-                .isEqualTo(bookingDto.getEnd().truncatedTo(ChronoUnit.SECONDS).toString());
+                .isEqualTo(bookingDto.getEnd().toString());
         assertThat(result)
                 .extractingJsonPathStringValue("$.start")
-                .isEqualTo(bookingDto.getStart().truncatedTo(ChronoUnit.SECONDS).toString());
+                .isEqualTo(bookingDto.getStart().toString());
         assertThat(result).extractingJsonPathNumberValue("$.id").isEqualTo(1);
         assertThat(result).extractingJsonPathNumberValue("$.itemId").isEqualTo(1);
     }
