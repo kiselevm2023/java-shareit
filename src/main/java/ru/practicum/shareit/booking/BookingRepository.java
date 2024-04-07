@@ -2,6 +2,7 @@ package ru.practicum.shareit.booking;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -12,6 +13,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface BookingRepository extends JpaRepository<Booking, Long> {
+
+    List<Booking> findAllByItemOwnerId(Long ownerId, Sort sort);
 
     @Query("select b from Booking b join fetch b.item i where b.id = :bookingId and i.owner.id = :ownerId")
     Optional<Booking> findBookingByBookingIdAndOwnerId(@Param("bookingId") Long bookingId,
@@ -67,4 +70,24 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             Long itemId,
             BookingStatus status,
             LocalDateTime localDateTime);
+
+    @Query(value = "SELECT b.*" +
+            "         FROM bookings b" +
+            "        INNER JOIN items i ON i.id = b.item_id AND i.id= :itemId " +
+            "        WHERE b.status !='REJECTED' " +
+            "          AND b.start_date > :dateTime " +
+            "        ORDER BY b.start_date ASC " +
+            "        LIMIT 1;",
+            nativeQuery = true)
+    Booking getNextItemBooking(long itemId, LocalDateTime dateTime);
+
+    @Query(value = "SELECT b.*" +
+            "         FROM bookings b" +
+            "        INNER JOIN items i ON i.id = b.item_id AND i.id=:itemId " +
+            "        WHERE b.status !='REJECTED' " +
+            "          AND b.start_date <= :dateTime " +
+            "        ORDER BY b.start_date DESC " +
+            "        LIMIT 1;",
+            nativeQuery = true)
+    Booking getLastItemBooking(long itemId, LocalDateTime dateTime);
 }

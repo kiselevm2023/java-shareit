@@ -3,6 +3,7 @@ package ru.practicum.shareit.item.dto;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.validation.annotation.Validated;
+import ru.practicum.shareit.booking.BookingDto;
 import ru.practicum.shareit.booking.BookingNextLastDto;
 import ru.practicum.shareit.item.comment.CommentDto;
 import ru.practicum.shareit.validated.Create;

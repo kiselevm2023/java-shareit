@@ -6,8 +6,11 @@ import javax.validation.constraints.NotNull;
 
 import lombok.Builder;
 import lombok.Data;
+import ru.practicum.shareit.item.comment.CommentDto;
 import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.validated.Create;
+
+import java.util.List;
 
 
 @Data
@@ -29,5 +32,7 @@ public class ItemDto {
     private Long requestId;
 
     private ItemRequest request;
+
+    private List<CommentDto> comments;
 
 }

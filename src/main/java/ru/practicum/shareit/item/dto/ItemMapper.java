@@ -3,6 +3,7 @@ package ru.practicum.shareit.item.dto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
+import ru.practicum.shareit.booking.BookingDto;
 import ru.practicum.shareit.booking.BookingNextLastDto;
 import ru.practicum.shareit.item.comment.CommentDto;
 import ru.practicum.shareit.item.model.Item;
@@ -29,5 +30,27 @@ public interface ItemMapper {
     @Mapping(source = "itemDto.name", target = "name")
     Item toItem(User owner, ItemDto itemDto);
 
+    public static ItemWithBookingsDateDto toItemResponseDtoWithBookings(Item item, List<CommentDto> comments) {
+        return new ItemWithBookingsDateDto(
+                item.getId(),
+                item.getName(),
+                item.getDescription(),
+                item.getAvailable(),
+                null,
+                null,
+                comments
+        );
+    }
 
+    public static ItemWithBookingsDateDto mapToItemDto(Item item, BookingNextLastDto lastBooking, BookingNextLastDto nextBooking, List<CommentDto> commentsDto) {
+        return new ItemWithBookingsDateDto(
+        item.getId(),
+        item.getName(),
+        item.getDescription(),
+        item.getAvailable(),
+        lastBooking,
+        nextBooking,
+        commentsDto
+        );
+    }
 }

@@ -13,8 +13,11 @@ import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.status.BookingStatus;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
+import ru.practicum.shareit.booking.BookingMapperImpl;
 
 import java.util.List;
+import java.util.Optional;
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -109,4 +112,24 @@ public class BookingServiceImpl implements BookingService {
                 throw new UnsupportedStatusException("Unknown state: " + state);
         }
     }
+
+    @Override
+    public BookingNextLastDto getNextItemBooking(long itemId, long ownerId, LocalDateTime currentTime) {
+        Booking booking = bookingRepository.getNextItemBooking(itemId, currentTime);
+        return booking != null ? bookingMapper.toBookingLastNextDto(booking) : null;
+    }
+
+    @Override
+    public BookingNextLastDto getLastItemBooking(long itemId, long ownerId, LocalDateTime currentTime) {
+        Booking booking = bookingRepository.getLastItemBooking(itemId, currentTime);
+        return booking != null ? bookingMapper.toBookingLastNextDto(booking) : null;
+    }
+
+    private void validFoundForBooking(Optional<Booking> booking) {
+        if (booking.isEmpty()) {
+            throw new NotFoundException("Бронирование не найдено");
+        }
+    }
+
+
 }
