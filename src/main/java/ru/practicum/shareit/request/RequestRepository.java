@@ -1,29 +1,21 @@
 package ru.practicum.shareit.request;
 
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import ru.practicum.shareit.request.model.Request;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface RequestRepository extends JpaRepository<Request, Long> {
+public interface RequestRepository extends JpaRepository<ItemRequest, Long> {
 
-    //@Query(value = "SELECT r FROM Request AS r WHERE r.userId = ?1 ORDER BY r.created DESC")
-    //List<Request> findForUser(long userId);
+    @Query("select ir from ItemRequest ir " +
+            "left join Item i ON ir.id = i.request.id " +
+            "where ir.requestor.id = :userId " +
+            "order by ir.created DESC")
+    List<ItemRequest> getAllItemRequestsByOwnerId(@Param("userId") Long userId);
 
-    //List<Item> findByRequestRequestId(Long itemRequestId, Sort sort);
-    //List<Item> findByItemRequestId(Long itemRequestId, Sort sort);
-
-
-
-    //@Query(value = "SELECT r FROM Request AS r WHERE r.user.Id) <> ?1")
-    //List<Request> findAllExceptOwner(Pageable pageable, long userId);
-
-
-    List<Request> findAllByAuthorId(Long userId, Sort sort);
-
-    Page<Request> findAllByAuthorIdNot(Long userId, Pageable pageable);
+    Page<ItemRequest> findAllRequestsByRequestorIdNot(Long requestorId, Pageable pageable);
 
 }

@@ -1,18 +1,21 @@
 package ru.practicum.shareit.item.dto;
 
+import lombok.Builder;
+import lombok.Data;
+import org.springframework.validation.annotation.Validated;
+import ru.practicum.shareit.booking.BookingNextLastDto;
+import ru.practicum.shareit.item.comment.CommentDto;
+import ru.practicum.shareit.validated.Create;
+
 import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-
-import lombok.Builder;
-import lombok.Data;
-import ru.practicum.shareit.request.ItemRequest;
-import ru.practicum.shareit.validated.Create;
-
+import java.util.List;
 
 @Data
+@Validated
 @Builder
-public class ItemDto {
+public class ItemWithBookingsDateDto {
 
     @Id
     private Long id;
@@ -26,8 +29,10 @@ public class ItemDto {
     @NotNull(groups = {Create.class}, message = "Available не может быть пустым")
     private Boolean available;
 
-    private Long requestId;
+    private BookingNextLastDto lastBooking;
 
-    private ItemRequest request;
+    private BookingNextLastDto nextBooking;
+
+    private List<CommentDto> comments;
 
 }

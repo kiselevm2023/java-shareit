@@ -1,27 +1,31 @@
-package ru.practicum.shareit.user.dto;
+package ru.practicum.shareit.user.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import ru.practicum.shareit.validated.Create;
-import ru.practicum.shareit.validated.Update;
-
+import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
+import lombok.*;
+import ru.practicum.shareit.validated.Create;
+import ru.practicum.shareit.validated.Update;
+
+@Entity
+@Table(name = "users", schema = "public")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserDto {
+public class User {
 
-    private long id;
+    @Id()
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @NotBlank(groups = {Create.class}, message = "Имя обязательное поле")
+    @Column()
     private String name;
 
     @NotBlank(groups = {Create.class}, message = "Email обязательное поле")
     @Email(groups = {Create.class, Update.class}, message = "Не верный формат email")
+    @Column()
     private String email;
 }
