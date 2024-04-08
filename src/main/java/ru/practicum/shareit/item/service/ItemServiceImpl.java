@@ -71,7 +71,9 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemWithBookingsDateDto> getAllItemsByOwnerId(Long id, Integer from, Integer size) {
-
+        if (size <= 0 || from < 0) {
+            throw new BadRequestException("Неверные параметры пагинации");
+        }
         userRepository.findById(id).orElseThrow(() -> new NotFoundException(
                 String.format("Пользователь с id %d не найден", id)));
         PageRequest pageRequest = PageRequest.of((from / size), size, Sort.by(ASC, "id"));
