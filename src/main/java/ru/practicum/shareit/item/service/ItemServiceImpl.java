@@ -48,6 +48,7 @@ public class ItemServiceImpl implements ItemService {
     private final BookingMapper bookingMapper;
     private final RequestRepository requestRepository;
     private final BookingService bookingService;
+
     @Override
     public ItemWithBookingsDateDto getItemById(Long itemId, Long ownerId) {
         User user = userRepository.searchByIdOrThrow(ownerId);
@@ -67,6 +68,7 @@ public class ItemServiceImpl implements ItemService {
         BookingNextLastDto nextBooking = bookingService.getNextItemBooking(item.getId(), ownerId, currentTime);
         return itemMapper.toItemWithBookingDto(item, lastBooking, nextBooking, commentsDto == null ? List.of() : commentsDto);
     }
+
     @Override
     public List<ItemWithBookingsDateDto> getAllItemsByOwnerId(Long id, Integer from, Integer size) {
 
