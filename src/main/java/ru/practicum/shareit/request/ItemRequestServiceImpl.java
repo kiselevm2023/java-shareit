@@ -30,19 +30,16 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Transactional
     public ItemRequestDto createItemRequestDto(Long userId, ItemRequestDto itemRequestDto) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("Пользователь не найден"));
-
+        User user = userRepository.searchByIdOrThrow(userId);
 
         ItemRequest itemRequest = itemRequestMapper.toItemRequest(user, itemRequestDto);
         ItemRequest savedItemRequest = requestRepository.save(itemRequest);
         return itemRequestMapper.toItemRequestDto(savedItemRequest);
     }
 
-
     public List<ItemRequestDto> getItemsRequests(Long userId) {
-        userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("Пользователь не найден"));
+
+        userRepository.searchByIdOrThrow(userId);
 
         List<ItemRequest> itemRequests = requestRepository.getAllItemRequestsByOwnerId(userId);
         List<ItemRequestDto> itemRequestDtos = new ArrayList<>();
@@ -61,11 +58,10 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
 
     public ItemRequestDto getItemRequests(Long userId, Long requestId) {
-        userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("Пользователь не найден"));
 
-        ItemRequest itemRequest = requestRepository.findById(requestId)
-                .orElseThrow(() -> new NotFoundException("Запрос не найден"));
+        userRepository.searchByIdOrThrow(userId);
+
+        ItemRequest itemRequest = requestRepository.searchByIdOrThrow(requestId);
 
         List<ItemDto> itemsDtos = itemMapper
                 .toItemDto(itemRepository.findAllItemsByRequestId(requestId));
@@ -77,8 +73,8 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         if (size <= 0 || from < 0) {
             throw new BadRequestException("Неверные параметры пагинации");
         }
-        userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("Пользователь не найден"));
+
+        userRepository.searchByIdOrThrow(userId);
 
         Pageable sortedByCreatedDesc =
                 PageRequest.of(((int) Math.floor((double) from / size)),

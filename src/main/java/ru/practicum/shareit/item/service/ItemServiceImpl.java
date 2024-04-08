@@ -74,8 +74,9 @@ public class ItemServiceImpl implements ItemService {
         if (size <= 0 || from < 0) {
             throw new BadRequestException("Неверные параметры пагинации");
         }
-        userRepository.findById(id).orElseThrow(() -> new NotFoundException(
-                String.format("Пользователь с id %d не найден", id)));
+
+        User user = userRepository.searchByIdOrThrow(id);
+
         PageRequest pageRequest = PageRequest.of((from / size), size, Sort.by(ASC, "id"));
 
         Map<Long, Item> items = itemRepository.findAllItemsByOwnerId(id, pageRequest).getContent().stream()
@@ -141,11 +142,6 @@ public class ItemServiceImpl implements ItemService {
                 .orElse(null);
     }
 
-
-
-
-
-
     public List<ItemDto> searchItems(String text, Integer from, Integer size) {
         if (size <= 0 || from < 0) {
             throw new BadRequestException("Неверные параметры пагинации");
@@ -158,13 +154,12 @@ public class ItemServiceImpl implements ItemService {
     }
 
     public ItemDto createItem(Long id, ItemDto itemDto) {
-        User owner = userRepository
-                .findById(id)
-                .orElseThrow(() -> new NotFoundException("Пользователь не найден"));
+
+        User owner = userRepository.searchByIdOrThrow(id);
 
         if (itemDto.getRequestId() != null) {
-            ItemRequest itemRequest = requestRepository.findById(itemDto.getRequestId())
-                    .orElseThrow(() -> new NotFoundException("Запрос не найден"));
+
+            ItemRequest itemRequest = requestRepository.searchByIdOrThrow(itemDto.getRequestId());
 
             itemDto.setRequest(itemRequest);
 
@@ -178,13 +173,10 @@ public class ItemServiceImpl implements ItemService {
     }
 
     public ItemDto updateItem(Long idItem, Long idOwner, ItemDto itemDto) {
-        userRepository
-                .findById(idOwner)
-                .orElseThrow(() -> new NotFoundException("Пользователь не найден"));
 
-        Item item = itemRepository
-                .findItemByIdAndOwnerId(idItem, idOwner)
-                .orElseThrow(() -> new NotFoundException("Вещь не найдена или ошибка доступа"));
+        User user = userRepository.searchByIdOrThrow(idOwner);
+
+        Item item = itemRepository.findItemByIdAndOwnerIdOrThrow(idItem, idOwner);
 
         item.setAvailable(
                 itemDto.getAvailable() == null
@@ -208,13 +200,10 @@ public class ItemServiceImpl implements ItemService {
     }
 
     public CommentDto createComment(Long userId, Long idItem, CommentDto commentDto) {
-        User user = userRepository
-                .findById(userId)
-                .orElseThrow(() -> new NotFoundException("Пользователь не найден"));
 
-        Item item = itemRepository
-                .findById(idItem)
-                .orElseThrow(() -> new NotFoundException("Вещь не найдена или ошибка доступа"));
+        User user = userRepository.searchByIdOrThrow(userId);
+
+        Item item = itemRepository.searchByIdOrThrow(idItem);
 
         if (!bookingRepository.existsByBooker_IdAndEndIsBefore(userId, LocalDateTime.now())) {
             throw new BadRequestException("Нельзя оставлять комментарии если не пользовались вещью");

@@ -6,6 +6,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.status.BookingStatus;
 
 import java.time.LocalDateTime;
@@ -13,6 +14,18 @@ import java.util.List;
 import java.util.Optional;
 
 public interface BookingRepository extends JpaRepository<Booking, Long> {
+
+    default Optional<Booking>  findByIdOrThrow(long id) {
+        return findById(id).map(Optional::of).orElseThrow(() -> new NotFoundException("Бронирование с id = " + id + " не найдено"));
+    }
+
+    default Booking searchByIdOrThrow(long id) {
+        return findById(id).orElseThrow(() -> new NotFoundException("Бронирование с id = " + id + " не найдено"));
+    }
+
+    default Booking findByIdAndOwnerIdNotOrThrow(Long bookingId, Long ownerId) {
+        return findBookingByBookingIdAndOwnerId(bookingId, ownerId).orElseThrow(() -> new NotFoundException("Бронирование не найдено"));
+    }
 
     List<Booking> findAllByItemOwnerId(Long ownerId, Sort sort);
 

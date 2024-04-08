@@ -30,15 +30,4 @@ public interface BookingMapper {
     @Mapping(source = "status", target = "status")
     Booking toBooking(BookingDto bookingDto, Item item, User booker, BookingStatus status);
 
-    /* public static BookingDto toBookingResponseDto(Booking booking) {
-        return new BookingDto(
-            booking.getId(),
-            booking.getStart(),
-            booking.getEnd(),
-            booking.getItem().getId(),
-            booking.getItem(),
-            booking.getBooker(),
-            booking.getStatus()
-        );
-    } */
 }

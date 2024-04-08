@@ -28,11 +28,10 @@ public class BookingServiceImpl implements BookingService {
 
     @Transactional
     public BookingDto createBooking(Long bookerId, BookingDto bookingDto) {
-        User booker = userRepository.findById(bookerId)
-                .orElseThrow(() -> new NotFoundException("Пользователь не найден"));
 
-        Item item = itemRepository.findByIdAndOwnerIdNot(bookingDto.getItemId(), bookerId)
-                .orElseThrow(() -> new NotFoundException("Вещь доступная для бронирования не найдена"));
+        User booker = userRepository.searchByIdOrThrow(bookerId);
+
+        Item item = itemRepository.findByIdAndOwnerIdNotOrThrow(bookingDto.getItemId(), bookerId);
 
         if (item.getAvailable() == false) {
             throw new BadRequestException("Вещь недоступна");
@@ -45,8 +44,7 @@ public class BookingServiceImpl implements BookingService {
     @Transactional
     public BookingDto approvingBooking(Long bookingId, Long ownerId, Boolean approved) {
 
-        Booking booking = bookingRepository.findBookingByBookingIdAndOwnerId(bookingId, ownerId)
-                .orElseThrow(() -> new NotFoundException("Бронирование не найдено"));
+        Booking booking = bookingRepository.findByIdAndOwnerIdNotOrThrow(bookingId, ownerId);
 
         BookingStatus status = booking.getStatus();
         if (BookingStatus.APPROVED.equals(status) || BookingStatus.REJECTED.equals(status)) {
@@ -58,8 +56,8 @@ public class BookingServiceImpl implements BookingService {
     }
 
     public BookingDto getBookingById(Long bookingId, Long userId) {
-        userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("Пользователь не найден"));
+
+        User user = userRepository.searchByIdOrThrow(userId);
 
         Booking booking = bookingRepository.findBookingByBookingIdAndOwnerIdOrOwnerItemId(bookingId, userId)
                 .orElseThrow(() -> new NotFoundException("Ничего не найдено"));
@@ -71,8 +69,8 @@ public class BookingServiceImpl implements BookingService {
         if (size <= 0 || from < 0) {
             throw new BadRequestException("Неверные параметры пагинации");
         }
-        userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("Пользователь не найден"));
+
+        User user = userRepository.searchByIdOrThrow(userId);
 
         Pageable pageable = CustomPageRequest.customOf(from, size);
 
@@ -84,8 +82,8 @@ public class BookingServiceImpl implements BookingService {
         if (size <= 0 || from < 0) {
             throw new BadRequestException("Неверные параметры пагинации");
         }
-        userRepository.findById(ownerId)
-                .orElseThrow(() -> new NotFoundException("Пользователь не найден"));
+
+        User user = userRepository.searchByIdOrThrow(ownerId);
 
         Pageable pageable = CustomPageRequest.customOf(from, size);
 
@@ -129,6 +127,4 @@ public class BookingServiceImpl implements BookingService {
             throw new NotFoundException("Бронирование не найдено");
         }
     }
-
-
 }
