@@ -32,9 +32,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     public UserDto updateUser(Long id, UserDto user) {
-        User oldUser = repository
-                .findById(id)
-                .orElseThrow(() -> new NotFoundException("Пользователь не найден"));
+        User oldUser = repository.searchByIdOrThrow(id);
 
         oldUser.setName(user.getName() == null ||
                 user.getName().isBlank()
@@ -49,17 +47,13 @@ public class UserServiceImpl implements UserService {
     }
 
     public UserDto getUserById(Long id) {
-        User user = repository
-                .findById(id)
-                .orElseThrow(() -> new NotFoundException("Пользователь не найден"));
+        User user = repository.searchByIdOrThrow(id);
 
         return userMapper.toUserDto(user);
     }
 
     public void deleteUser(Long id) {
-        repository
-                .findById(id)
-                .orElseThrow(() -> new NotFoundException("Пользователь не найден"));
+        repository.searchByIdOrThrow(id);
 
         repository.deleteById(id);
     }
