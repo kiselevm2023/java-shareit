@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.*;
 import ru.practicum.shareit.customPageRequest.CustomPageRequest;
 import ru.practicum.shareit.exception.BadRequestException;
-import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.comment.Comment;
 import ru.practicum.shareit.item.comment.CommentDto;
 import ru.practicum.shareit.item.comment.CommentMapper;
