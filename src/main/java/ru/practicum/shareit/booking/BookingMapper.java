@@ -6,7 +6,6 @@ import org.mapstruct.factory.Mappers;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.status.BookingStatus;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.dto.UserDto;
 
 import javax.annotation.processing.Generated;
 import java.util.List;

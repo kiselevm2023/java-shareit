@@ -29,8 +29,6 @@ import ru.practicum.shareit.request.RequestRepository;
 import ru.practicum.shareit.status.BookingStatus;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
-//import static ru.practicum.shareit.item.dto.ItemMapper.mapToItemDto;
-import ru.practicum.shareit.item.dto.ItemMapperImpl;
 
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
@@ -50,31 +48,6 @@ public class ItemServiceImpl implements ItemService {
     private final BookingMapper bookingMapper;
     private final RequestRepository requestRepository;
     private final BookingService bookingService;
-
-
-
-
-
-    /* public ItemWithBookingsDateDto getItemById(Long itemId, Long userId) {
-        Item item = itemRepository
-                .findById(itemId)
-                .orElseThrow(() -> new NotFoundException("Вещь не найдена"));
-
-        userRepository
-                .findById(userId)
-                .orElseThrow(() -> new NotFoundException("Пользователь не найден"));
-
-
-        List<CommentDto> commentDtos = CommentMapper.toCommentDto(commentRepository.findAllCommentByItemId(itemId));
-        BookingNextLastDto lastBooking = bookingMapper.toBookingLastNextDto(getLatestBooking(item.getId()));
-        BookingNextLastDto nextBooking = bookingMapper.toBookingLastNextDto(getNextBooking(item.getId()));
-        Long itemOwnerId = item.getOwner().getId();
-
-        return itemMapper.toItemWithBookingDto(item, userId.equals(itemOwnerId)
-                ? lastBooking : null, userId.equals(itemOwnerId) ? nextBooking : null, commentDtos);
-
-    }  */
-
     @Override
     public ItemWithBookingsDateDto getItemById(Long itemId, Long ownerId) {
         User user = userRepository.searchByIdOrThrow(ownerId);
@@ -94,44 +67,6 @@ public class ItemServiceImpl implements ItemService {
         BookingNextLastDto nextBooking = bookingService.getNextItemBooking(item.getId(), ownerId, currentTime);
         return itemMapper.toItemWithBookingDto(item, lastBooking, nextBooking, commentsDto == null ? List.of() : commentsDto);
     }
-
-
-
-
-
-
-
-
-    /*
-    public List<ItemWithBookingsDateDto> getAllItemsByOwnerId(Long id, Integer from, Integer size) {
-        if (size <= 0 || from < 0) {
-            throw new BadRequestException("Неверные параметры пагинации");
-        }
-
-        userRepository
-                .findById(id)
-                .orElseThrow(() -> new NotFoundException("Пользователь не найден"));
-
-        Pageable pageable = CustomPageRequest.customOf(from, size);
-
-        List<Item> items = itemRepository.findAllItemsByOwnerId(id, pageable).getContent();
-        List<ItemWithBookingsDateDto> result = new ArrayList<>();
-
-        for (Item item : items) {
-            BookingNextLastDto lastBooking = bookingMapper.toBookingLastNextDto(getLatestBooking(item.getId()));
-            BookingNextLastDto nextBooking = bookingMapper.toBookingLastNextDto(getNextBooking(item.getId()));
-            List<CommentDto> commentDtos = CommentMapper.toCommentDto(commentRepository
-                    .findAllCommentByItemId(item.getId()));
-
-            ItemWithBookingsDateDto itemWithBookingsDateDto = itemMapper.toItemWithBookingDto(item,
-                    lastBooking, nextBooking, commentDtos);
-            result.add(itemWithBookingsDateDto);
-        }
-
-        return result;
-    } */
-
-
     @Override
     public List<ItemWithBookingsDateDto> getAllItemsByOwnerId(Long id, Integer from, Integer size) {
 

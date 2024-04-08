@@ -13,7 +13,6 @@ import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.status.BookingStatus;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
-import ru.practicum.shareit.booking.BookingMapperImpl;
 
 import java.util.List;
 import java.util.Optional;
