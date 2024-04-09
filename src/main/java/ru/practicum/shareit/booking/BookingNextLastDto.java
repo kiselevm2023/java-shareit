@@ -4,10 +4,8 @@ import lombok.Builder;
 import lombok.Data;
 import org.springframework.validation.annotation.Validated;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.status.BookingStatus;
 import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.validated.Create;
 
 import javax.persistence.Id;

@@ -10,10 +10,8 @@ import lombok.Builder;
 import lombok.Data;
 import ru.practicum.shareit.exception.BadRequestException;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.status.BookingStatus;
 import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.validated.Create;
 
 @Data
