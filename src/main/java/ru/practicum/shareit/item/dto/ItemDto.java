@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
 import ru.practicum.shareit.item.comment.CommentDto;
-import ru.practicum.shareit.request.ItemRequest;
+//import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.request.ItemRequestDto;
 import ru.practicum.shareit.validated.Create;
 

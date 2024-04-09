@@ -23,7 +23,7 @@ import ru.practicum.shareit.item.dto.ItemWithBookingsDateDto;
 import ru.practicum.shareit.item.dto.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
-import ru.practicum.shareit.request.ItemRequest;
+//import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.request.RequestRepository;
 import ru.practicum.shareit.status.BookingStatus;
 import ru.practicum.shareit.user.model.User;

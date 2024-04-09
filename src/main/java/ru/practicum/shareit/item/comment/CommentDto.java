@@ -1,9 +1,9 @@
 package ru.practicum.shareit.item.comment;
 
 import lombok.*;
-import ru.practicum.shareit.item.dto.ItemDto;
+//import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.dto.UserDto;
+//import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.validated.Create;
 
