@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.*;
 import ru.practicum.shareit.customPageRequest.CustomPageRequest;
 import ru.practicum.shareit.exception.BadRequestException;
+import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.comment.Comment;
 import ru.practicum.shareit.item.comment.CommentDto;
 import ru.practicum.shareit.item.comment.CommentMapper;
@@ -28,6 +29,7 @@ import ru.practicum.shareit.request.RequestRepository;
 import ru.practicum.shareit.status.BookingStatus;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
+import ru.practicum.shareit.request.ItemRequest;
 
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
@@ -152,24 +154,29 @@ public class ItemServiceImpl implements ItemService {
 
     }
 
+    @Override
     public ItemDto createItem(Long id, ItemDto itemDto) {
-
+        // Получаем пользователя по его id
         User owner = userRepository.searchByIdOrThrow(id);
 
-        /* if (itemDto.getRequestId() != null) {
-
-            ItemRequest itemRequest = requestRepository.searchByIdOrThrow(itemDto.getRequestId());
-
-            itemDto.setRequest(itemRequest);
-
-        }  */
-
+        // Создаем новый объект Item на основе данных из itemDto
         Item item = itemMapper.toItem(owner, itemDto);
 
-        itemRepository.save(item);
+        // Устанавливаем requestId, если он передан в itemDto
+        if (itemDto.getRequestId() != null) {
+            // Поиск объекта ItemRequest по requestId и установка его в Item
+            ItemRequest request = requestRepository.findById(itemDto.getRequestId())
+                    .orElseThrow(() -> new NotFoundException("ItemRequest с id " + itemDto.getRequestId() + " не найден"));
+            item.setRequest(request);
+        }
 
-        return itemMapper.toItemDto(item);
+        // Сохраняем объект Item в репозитории и возвращаем соответствующий ItemDto
+        Item savedItem = itemRepository.save(item);
+        return itemMapper.toItemDto(savedItem);
     }
+
+
+
 
     public ItemDto updateItem(Long idItem, Long idOwner, ItemDto itemDto) {
 
