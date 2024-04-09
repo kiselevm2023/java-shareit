@@ -9,8 +9,10 @@ import javax.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
 import ru.practicum.shareit.exception.BadRequestException;
+import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.status.BookingStatus;
+import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.validated.Create;
 
@@ -33,9 +35,9 @@ public class BookingDto {
     @NotNull(groups = {Create.class}, message = "ItemId не может быть пустым")
     private Long itemId;
 
-    private Item item;
+    private ItemDto item;
 
-    private User booker;
+    private UserDto booker;
 
     private BookingStatus status;
 

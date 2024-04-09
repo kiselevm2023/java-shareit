@@ -3,8 +3,10 @@ package ru.practicum.shareit.booking;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.validation.annotation.Validated;
+import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.status.BookingStatus;
+import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.validated.Create;
 
@@ -32,9 +34,9 @@ public class BookingNextLastDto {
     @NotNull(groups = {Create.class}, message = "ItemId не может быть пустым")
     private Long itemId;
 
-    private Item item;
+    private ItemDto item;
 
-    private User booker;
+    private UserDto booker;
 
     private Long bookerId;
 
