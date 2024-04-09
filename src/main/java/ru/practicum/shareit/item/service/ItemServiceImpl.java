@@ -156,13 +156,13 @@ public class ItemServiceImpl implements ItemService {
 
         User owner = userRepository.searchByIdOrThrow(id);
 
-        if (itemDto.getRequestId() != null) {
+        /* if (itemDto.getRequestId() != null) {
 
             ItemRequest itemRequest = requestRepository.searchByIdOrThrow(itemDto.getRequestId());
 
             itemDto.setRequest(itemRequest);
 
-        }
+        }  */
 
         Item item = itemMapper.toItem(owner, itemDto);
 
