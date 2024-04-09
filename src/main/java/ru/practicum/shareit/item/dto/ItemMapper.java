@@ -8,9 +8,6 @@ import org.mapstruct.factory.Mappers;
 import ru.practicum.shareit.booking.BookingNextLastDto;
 import ru.practicum.shareit.item.comment.CommentDto;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.request.ItemRequest;
-import ru.practicum.shareit.request.ItemRequestDto;
-import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.List;
