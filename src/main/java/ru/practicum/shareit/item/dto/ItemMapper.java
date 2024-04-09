@@ -61,7 +61,7 @@ public interface ItemMapper {
         );
     }
 
-
+    /*
     public static Item first(User owner, ItemDto itemDto) {
         if ( owner == null && itemDto == null ) {
             return null;
@@ -158,5 +158,5 @@ public interface ItemMapper {
         userDto.email( user.getEmail() );
 
         return userDto.build();
-    }
+    }  */
 }
