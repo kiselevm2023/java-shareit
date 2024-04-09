@@ -19,10 +19,9 @@ import ru.practicum.shareit.booking.BookingService;
 import ru.practicum.shareit.constants.HttpConstants;
 import ru.practicum.shareit.exception.BadRequestException;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.status.BookingStatus;
 import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.model.User;
+
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
@@ -78,8 +77,8 @@ public class BookingControllerTestsMock {
                 .id(1L)
                 .start(LocalDateTime.of(2023, 12, 12, 10, 0))
                 .end(LocalDateTime.of(2023, 12, 20, 10, 0))
-                .booker(User.builder().id(userDto.getId()).name(userDto.getName()).build())
-                .item(Item.builder().id(itemDto.getId()).name(itemDto.getName()).build())
+                .booker(UserDto.builder().id(userDto.getId()).name(userDto.getName()).build())
+                .item(ItemDto.builder().id(itemDto.getId()).name(itemDto.getName()).build())
                 .build();
 
         bookingNextLastDto = BookingNextLastDto
