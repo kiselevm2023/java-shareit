@@ -121,10 +121,4 @@ public class BookingServiceImpl implements BookingService {
         Booking booking = bookingRepository.getLastItemBooking(itemId, currentTime);
         return booking != null ? bookingMapper.toBookingLastNextDto(booking) : null;
     }
-
-    private void validFoundForBooking(Optional<Booking> booking) {
-        if (booking.isEmpty()) {
-            throw new NotFoundException("Бронирование не найдено");
-        }
-    }
 }

@@ -24,9 +24,7 @@ import ru.practicum.shareit.item.dto.ItemWithBookingsDateDto;
 import ru.practicum.shareit.item.dto.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
-//import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.request.RequestRepository;
-import ru.practicum.shareit.status.BookingStatus;
 import ru.practicum.shareit.user.dto.UserMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
@@ -94,42 +92,34 @@ public class ItemServiceImpl implements ItemService {
                         Sort.by(DESC, "start"))
                 .stream()
                 .collect(groupingBy(Booking::getItem));
-
+        LocalDateTime currentTime = LocalDateTime.now();
         return new ArrayList<>(items.values()).stream()
                 .map(item -> setItemComments(item, comments))
-                .peek(i -> i.setLastBooking(getLastBookings(bookings.get(items.get(i.getId())))))
-                .peek(i -> i.setNextBooking(getNextBookings(bookings.get(items.get(i.getId())))))
+                .peek(i -> i.setLastBooking(getLastBookings(bookings.get(items.get(i.getId())), currentTime)))
+                .peek(i -> i.setNextBooking(getNextBookings(bookings.get(items.get(i.getId())), currentTime)))
                 .collect(toList());
     }
 
-    private BookingNextLastDto getLastBookings(List<Booking> bookings) {
+    private BookingNextLastDto getLastBookings(List<Booking> bookings, LocalDateTime currentTime) {
         if (bookings == null || bookings.isEmpty()) {
             return null;
         }
 
         Optional<Booking> lastBooking = bookings.stream()
-                .filter(booking -> booking.getStart().isBefore(LocalDateTime.now()))
+                .filter(booking -> !booking.getStart().isAfter(currentTime))
                 .max(Comparator.comparing(Booking::getStart));
         return lastBooking.map(booking -> bookingMapper.toBookingLastNextDto(booking)).orElse(null);
     }
 
-    private BookingNextLastDto getNextBookings(List<Booking> bookings) {
+    private BookingNextLastDto getNextBookings(List<Booking> bookings, LocalDateTime currentTime) {
         if (bookings == null || bookings.isEmpty()) {
             return null;
         }
 
         Optional<Booking> nextBooking = bookings.stream()
-                .filter(booking -> booking.getStart().isAfter(LocalDateTime.now()))
+                .filter(booking -> booking.getStart().isAfter(currentTime))
                 .min(Comparator.comparing(Booking::getStart));
         return nextBooking.map(booking -> bookingMapper.toBookingLastNextDto(booking)).orElse(null);
-    }
-
-    private Booking getNextBooking(Long itemId) {
-        return bookingRepository.findTopByItemIdAndStatusNotAndStartAfterOrderByStartAsc(
-                        itemId,
-                        BookingStatus.REJECTED,
-                        LocalDateTime.now())
-                .orElse(null);
     }
 
     private ItemWithBookingsDateDto setItemComments(Item item, Map<Item, List<Comment>> comments) {
@@ -138,11 +128,6 @@ public class ItemServiceImpl implements ItemService {
         }
         return ItemMapper.toItemResponseDtoWithBookings(item, CommentMapper.toCommentDtoList(comments.get(item), userMapper, itemMapper));
 
-    }
-
-    private Booking getLatestBooking(Long itemId) {
-        return bookingRepository.findTopByItemIdAndStartBeforeOrderByStartDesc(itemId, LocalDateTime.now())
-                .orElse(null);
     }
 
     public List<ItemDto> searchItems(String text, Integer from, Integer size) {
@@ -176,9 +161,6 @@ public class ItemServiceImpl implements ItemService {
         Item savedItem = itemRepository.save(item);
         return itemMapper.toItemDto(savedItem);
     }
-
-
-
 
     public ItemDto updateItem(Long idItem, Long idOwner, ItemDto itemDto) {
 
@@ -219,7 +201,6 @@ public class ItemServiceImpl implements ItemService {
         commentDto.setAuthor(userMapper.toUserDto(user));
         commentDto.setItem(itemMapper.toItemDto(item));
         Comment comment = commentRepository.save(CommentMapper.toComment(commentDto, user, item));
-
 
         return CommentMapper.toCommentDto(comment, userMapper, itemMapper);
 
