@@ -27,6 +27,7 @@ import ru.practicum.shareit.item.repository.ItemRepository;
 //import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.request.RequestRepository;
 import ru.practicum.shareit.status.BookingStatus;
+import ru.practicum.shareit.user.dto.UserMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 import ru.practicum.shareit.request.ItemRequest;
@@ -46,6 +47,7 @@ public class ItemServiceImpl implements ItemService {
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
     private final ItemMapper itemMapper;
+    private final UserMapper userMapper;
     private final BookingMapper bookingMapper;
     private final RequestRepository requestRepository;
     private final BookingService bookingService;
@@ -59,7 +61,7 @@ public class ItemServiceImpl implements ItemService {
 
     private ItemWithBookingsDateDto getItemDtoWithBookingAndComments(Item item, long ownerId) {
         List<CommentDto> commentsDto = commentRepository.findAllCommentByItemId(item.getId()).stream()
-                .map(CommentMapper::toCommentDto)
+                .map(comment -> CommentMapper.toCommentDto(comment, userMapper, itemMapper))
                 .collect(Collectors.toList());
         if (item.getOwner().getId() != ownerId) {
             return itemMapper.toItemWithBookingDto(item, null, null, commentsDto);
@@ -132,9 +134,9 @@ public class ItemServiceImpl implements ItemService {
 
     private ItemWithBookingsDateDto setItemComments(Item item, Map<Item, List<Comment>> comments) {
         if (comments.isEmpty() || comments.get(item) == null) {
-            return ItemMapper.toItemResponseDtoWithBookings(item, CommentMapper.toCommentDto(new ArrayList<>()));
+            return ItemMapper.toItemResponseDtoWithBookings(item, CommentMapper.toCommentDtoList(new ArrayList<>(), userMapper, itemMapper));
         }
-        return ItemMapper.toItemResponseDtoWithBookings(item, CommentMapper.toCommentDto(comments.get(item)));
+        return ItemMapper.toItemResponseDtoWithBookings(item, CommentMapper.toCommentDtoList(comments.get(item), userMapper, itemMapper));
 
     }
 
@@ -214,10 +216,12 @@ public class ItemServiceImpl implements ItemService {
         if (!bookingRepository.existsByBooker_IdAndEndIsBefore(userId, LocalDateTime.now())) {
             throw new BadRequestException("Нельзя оставлять комментарии если не пользовались вещью");
         }
-        commentDto.setAuthor(user);
-        commentDto.setItem(item);
+        commentDto.setAuthor(userMapper.toUserDto(user));
+        commentDto.setItem(itemMapper.toItemDto(item));
+        Comment comment = commentRepository.save(CommentMapper.toComment(commentDto, user, item));
 
-        return CommentMapper.toCommentDto(commentRepository.save(CommentMapper.toComment(commentDto)));
+
+        return CommentMapper.toCommentDto(comment, userMapper, itemMapper);
 
     }
 }

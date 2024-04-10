@@ -2,8 +2,10 @@ package ru.practicum.shareit.item.comment;
 
 import lombok.*;
 //import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 //import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.validated.Create;
 
@@ -21,11 +23,11 @@ public class CommentDto {
     @NotBlank(groups = Create.class, message = "Комментарий не может быть пустым")
     private String text;
 
-    private User author;
+    private UserDto author;
 
     private String authorName;
 
-    private Item item;
+    private ItemDto item;
 
     private LocalDateTime created;
 }
