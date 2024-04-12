@@ -8,15 +8,19 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exception.BadRequestException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemMapper;
+import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
-
-import org.springframework.data.domain.Pageable;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toList;
+import static org.springframework.data.domain.Sort.Direction.ASC;
+import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @Service
 @RequiredArgsConstructor
@@ -68,32 +72,33 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         return itemRequestMapper.toItemRequestDto(itemRequest, itemsDtos);
     }
 
+    @Override
     public List<ItemRequestDto> getAllItemRequests(Long userId, Integer from, Integer size) {
+
         if (size <= 0 || from < 0) {
             throw new BadRequestException("Неверные параметры пагинации");
         }
-
         userRepository.searchByIdOrThrow(userId);
+        PageRequest pageRequest = PageRequest.of((from / size), size, Sort.by(DESC, "created"));
+        List<ItemRequest> responseDtoList = requestRepository.findAllRequestsByRequestorIdNot(userId, pageRequest).getContent();
+        Map<ItemRequest, List<Item>> itemsMap = itemRepository.findByRequestIn(responseDtoList, Sort.by(ASC, "id"))
+                .stream()
+                .collect(groupingBy(Item::getRequest, toList()));
+        return responseDtoList.stream()
+                .map(itemRequest -> setItemRequestItems(itemRequest, itemsMap.get(itemRequest)))
+                .collect(toList());
+    }
 
-        Pageable sortedByCreatedDesc =
-                PageRequest.of(((int) Math.floor((double) from / size)),
-                        size, Sort.by("created").descending());
+    private ItemRequestDto setItemRequestItems(ItemRequest itemRequest, List<Item> items) {
 
-        List<ItemRequest> itemRequests = requestRepository
-                .findAllRequestsByRequestorIdNot(userId, sortedByCreatedDesc).getContent();
-
-        List<ItemRequestDto> itemRequestDtos = new ArrayList<>();
-
-        for (ItemRequest itemRequest : itemRequests) {
-            List<ItemDto> itemsDtos = itemMapper
-                    .toItemDto(itemRepository.findAllItemsByRequestId(itemRequest.getId()));
-
-            ItemRequestDto itemRequestDto = itemRequestMapper.toItemRequestDtoWithItems(itemRequest, itemsDtos);
-
-            itemRequestDtos.add(itemRequestDto);
-
+        List<ItemDto> itemResponseDtoList = new ArrayList<>();
+        if (items != null) {
+            for (Item item : items) {
+                itemResponseDtoList.add(itemMapper.toItemDto(item));
+            }
         }
-        return itemRequestDtos;
-
+        ItemRequestDto responseDto = itemRequestMapper.toItemRequestDto(itemRequest);
+        responseDto.setItems(itemResponseDtoList);
+        return responseDto;
     }
 }
