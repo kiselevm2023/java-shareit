@@ -156,7 +156,7 @@ public class BookingControllerUnitTests {
         UserDto usere = userController.createUser(user);
         ItemDto item = itemController.createItem(usere.getId(), itemDto);
         UserDto user13 = userController.createUser(userM2);
-        bookingDto.setEnd(LocalDateTime.of(2021, 9, 24, 12, 30));
+        bookingDto.setEnd(null);
         assertThrows(ConstraintViolationException.class, () -> bookingController
                 .createBooking(user13.getId(), bookingDto));
     }
