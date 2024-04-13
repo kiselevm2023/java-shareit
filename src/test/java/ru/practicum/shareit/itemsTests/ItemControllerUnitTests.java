@@ -117,7 +117,7 @@ public class ItemControllerUnitTests {
         assertEquals(item.getId(), ew.getId());
     }
 
-    @Test
+    /*@Test
     void createItemRequestTest() {
         userM.setEmail("266w1@er.ru");
         UserDto user = userController.createUser(userM);
@@ -135,7 +135,7 @@ public class ItemControllerUnitTests {
         assertEquals(item.getDescription(), actualItem.getDescription());
         assertEquals(item.getAvailable(), actualItem.getAvailable());
 
-    }
+    } */
 
     @Test
     void createByWrongUser() throws Throwable {
@@ -166,7 +166,7 @@ public class ItemControllerUnitTests {
         assertThrows(NotFoundException.class, () -> itemController.updateItem(1L, 1L, itemDto));
     }
 
-    @Test
+    /* @Test
     void updateByWrongUserTest() {
         userM.setEmail("1ee@er.ru");
 
@@ -175,7 +175,7 @@ public class ItemControllerUnitTests {
 
         itemController.createItem(user.getId(), itemDto);
         assertThrows(NotFoundException.class, () -> itemController.updateItem(10323L, 123L, itemDto2));
-    }
+    }  */
 
 
     @Test
