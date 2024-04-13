@@ -1,12 +1,12 @@
 package ru.practicum.shareit.user.model;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
+//import javax.validation.constraints.Email;
 //import javax.validation.constraints.NotBlank;
 
 import lombok.*;
-import ru.practicum.shareit.validated.Create;
-import ru.practicum.shareit.validated.Update;
+//import ru.practicum.shareit.validated.Create;
+//import ru.practicum.shareit.validated.Update;
 
 @Entity
 @Table(name = "users", schema = "public")
@@ -24,7 +24,7 @@ public class User {
     private String name;
 
     //@NotBlank(groups = {Create.class}, message = "Email обязательное поле")
-    @Email(groups = {Create.class, Update.class}, message = "Не верный формат email")
+    //@Email(groups = {Create.class, Update.class}, message = "Не верный формат email")
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 }
