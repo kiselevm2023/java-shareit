@@ -17,7 +17,7 @@ import ru.practicum.shareit.request.ItemRequestController;
 import ru.practicum.shareit.request.ItemRequestDto;
 import ru.practicum.shareit.user.controller.UserController;
 import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.model.User;
+//import ru.practicum.shareit.user.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
