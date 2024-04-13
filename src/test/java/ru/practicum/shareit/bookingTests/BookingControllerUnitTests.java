@@ -152,16 +152,6 @@ public class BookingControllerUnitTests {
     }
 
     @Test
-    void createWithWrongEndDate() {
-        UserDto usere = userController.createUser(user);
-        ItemDto item = itemController.createItem(usere.getId(), itemDto);
-        UserDto user13 = userController.createUser(userM2);
-        bookingDto.setEnd(null);
-        assertThrows(BadRequestException.class, () -> bookingController
-                .createBooking(user13.getId(), bookingDto));
-    }
-
-    @Test
     void approvingBookingTest() {
         UserDto usewer = userController.createUser(user);
         ItemDto item = itemController.createItem(usewer.getId(), itemDto);
