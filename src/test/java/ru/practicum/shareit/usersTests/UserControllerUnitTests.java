@@ -23,11 +23,11 @@ public class UserControllerUnitTests {
     private UserController userController;
 
     private UserDto userDto;
-    private User user;
+    private UserDto user;
 
     @BeforeEach
     void init() {
-        user = new User();
+        user = new UserDto();
         user.setName("11");
         user.setEmail("1141414141@email.com");
 

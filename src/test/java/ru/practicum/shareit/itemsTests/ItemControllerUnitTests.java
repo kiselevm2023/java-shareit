@@ -47,9 +47,9 @@ public class ItemControllerUnitTests {
     private ItemWithBookingsDateDto itemWithBookingsDateDto;
 
     private UserDto userDto;
-    private User userM;
+    private UserDto userM;
 
-    private User userM2;
+    private UserDto userM2;
 
     private ItemRequestDto itemRequestDto;
 
@@ -78,7 +78,7 @@ public class ItemControllerUnitTests {
                 .available(true)
                 .build();
 
-        userM = User
+        userM = UserDto
                 .builder()
                 .name("name")
                 .email("user@email.com")
@@ -90,7 +90,7 @@ public class ItemControllerUnitTests {
                 .email("user@email.com")
                 .build();
 
-        userM2 = User
+        userM2 = UserDto
                 .builder()
                 .name("name")
                 .email("user2@email.com")

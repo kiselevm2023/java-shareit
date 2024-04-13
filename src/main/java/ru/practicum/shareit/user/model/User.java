@@ -20,12 +20,11 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(groups = {Create.class}, message = "Имя обязательное поле")
-    @Column()
+    @Column(name = "name", nullable = false)
     private String name;
 
     @NotBlank(groups = {Create.class}, message = "Email обязательное поле")
     @Email(groups = {Create.class, Update.class}, message = "Не верный формат email")
-    @Column()
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 }

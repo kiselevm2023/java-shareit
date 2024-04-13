@@ -36,7 +36,7 @@ public class ItemRequestsControllerUnitTests {
 
     private ItemRequest itemRequest;
 
-    private User user;
+    private UserDto user;
 
     private ItemDto itemDto;
 
@@ -58,7 +58,7 @@ public class ItemRequestsControllerUnitTests {
                 .description("item request description")
                 .build();
 
-        user = User
+        user = UserDto
                 .builder()
                 .name("name")
                 .email("user@email.com")

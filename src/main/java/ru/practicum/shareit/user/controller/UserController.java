@@ -31,9 +31,9 @@ public class UserController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public UserDto createUser(@Validated(Create.class) @RequestBody User user) {
-        log.info("Post request /users, data transmitted: {}", user);
-        return userService.createUser(user);
+    public UserDto createUser(@Validated(Create.class) @RequestBody UserDto userDto) {
+        log.info("Post request /users, data transmitted: {}", userDto);
+        return userService.createUser(userDto);
     }
 
     @ResponseStatus(HttpStatus.OK)
