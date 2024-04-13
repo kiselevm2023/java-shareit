@@ -157,7 +157,7 @@ public class BookingControllerUnitTests {
         ItemDto item = itemController.createItem(usere.getId(), itemDto);
         UserDto user13 = userController.createUser(userM2);
         bookingDto.setEnd(null);
-        assertThrows(ConstraintViolationException.class, () -> bookingController
+        assertThrows(BadRequestException.class, () -> bookingController
                 .createBooking(user13.getId(), bookingDto));
     }
 
