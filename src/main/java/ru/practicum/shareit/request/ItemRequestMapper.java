@@ -7,8 +7,9 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.List;
+import org.mapstruct.MappingConstants;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface ItemRequestMapper {
 
     ItemRequestMapper INSTANCE = Mappers.getMapper(ItemRequestMapper.class);

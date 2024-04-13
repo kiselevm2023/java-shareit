@@ -143,21 +143,17 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto createItem(Long id, ItemDto itemDto) {
-        // Получаем пользователя по его id
+
         User owner = userRepository.searchByIdOrThrow(id);
 
-        // Создаем новый объект Item на основе данных из itemDto
         Item item = itemMapper.toItem(owner, itemDto);
 
-        // Устанавливаем requestId, если он передан в itemDto
         if (itemDto.getRequestId() != null) {
-            // Поиск объекта ItemRequest по requestId и установка его в Item
             ItemRequest request = requestRepository.findById(itemDto.getRequestId())
                     .orElseThrow(() -> new NotFoundException("ItemRequest с id " + itemDto.getRequestId() + " не найден"));
             item.setRequest(request);
         }
 
-        // Сохраняем объект Item в репозитории и возвращаем соответствующий ItemDto
         Item savedItem = itemRepository.save(item);
         return itemMapper.toItemDto(savedItem);
     }
