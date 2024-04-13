@@ -21,15 +21,11 @@ public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotBlank(message = "Name не может быть пустым")
-    @Column
+    @Column(name = "name", nullable = false)
     private String name;
-    @NotBlank(message = "Description не может быть пустым")
-    @Column
+    @Column(name = "description", nullable = false)
     private String description;
-
-    @NotNull(message = "Available не может быть пустым")
-    @Column(name = "is_available")
+    @Column(name = "is_available", nullable = false)
     private Boolean available;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
