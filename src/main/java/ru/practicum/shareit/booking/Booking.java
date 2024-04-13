@@ -2,8 +2,6 @@ package ru.practicum.shareit.booking;
 
 import java.time.LocalDateTime;
 import javax.persistence.*;
-import javax.validation.constraints.Future;
-import javax.validation.constraints.FutureOrPresent;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,11 +23,9 @@ public class Booking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @FutureOrPresent(message = "Нельзя бронировать задним числом")
     @Column(name = "start_date")
     private LocalDateTime start;
 
-    @Future(message = "Нельзя бронировать задним числом")
     @Column(name = "end_date")
     private LocalDateTime end;
 
