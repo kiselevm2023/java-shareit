@@ -30,6 +30,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     private final ItemRepository itemRepository;
     private final ItemMapper itemMapper;
     private final ItemRequestMapper itemRequestMapper;
+
     public ItemRequestDto createItemRequestDto(Long userId, ItemRequestDto itemRequestDto) {
         User user = userRepository.searchByIdOrThrow(userId);
         ItemRequest itemRequest = itemRequestMapper.toItemRequest(user, itemRequestDto);
