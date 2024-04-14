@@ -40,6 +40,7 @@ public class BookingServiceImpl implements BookingService {
                 .save(bookingMapper.toBooking(bookingDto, item, booker, BookingStatus.WAITING)));
     }
 
+    @Transactional
     public BookingDto approvingBooking(Long bookingId, Long ownerId, Boolean approved) {
 
         Booking booking = bookingRepository.findByIdAndOwnerIdNotOrThrow(bookingId, ownerId);
@@ -53,7 +54,6 @@ public class BookingServiceImpl implements BookingService {
         return bookingMapper.toBookingDto(booking);
     }
 
-    @Transactional
     public BookingDto getBookingById(Long bookingId, Long userId) {
 
         User user = userRepository.searchByIdOrThrow(userId);

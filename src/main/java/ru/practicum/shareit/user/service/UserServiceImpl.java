@@ -1,10 +1,10 @@
 package ru.practicum.shareit.user.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.user.dto.UserMapper;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
@@ -28,20 +28,18 @@ public class UserServiceImpl implements UserService {
         return userMapper.toUserDto(repository.save(userMapper.toUser(userDto)));
     }
 
-    @Transactional
     public UserDto updateUser(Long id, UserDto user) {
-        User oldUser = repository.searchByIdOrThrow(id);
-
-        oldUser.setName(user.getName() == null ||
-                user.getName().isBlank()
-                ? oldUser.getName()
-                : user.getName());
-        oldUser.setEmail(user.getEmail() == null ||
-                user.getEmail().isBlank()
-                ? oldUser.getEmail()
-                : user.getEmail());
-
-        return userMapper.toUserDto(oldUser);
+        Optional<User> userOptional = repository.findByIdOrThrow(id);
+        User updateUser = userOptional.get();
+        String updateName = user.getName();
+        if (updateName != null && !updateName.isBlank()) {
+            updateUser.setName(updateName);
+        }
+        String updateEmail = user.getEmail();
+        if (updateEmail != null && !updateEmail.isBlank()) {
+            updateUser.setEmail(updateEmail);
+        }
+        return userMapper.toUserDto(repository.save(updateUser));
     }
 
     public UserDto getUserById(Long id) {
