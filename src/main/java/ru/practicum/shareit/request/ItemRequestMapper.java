@@ -8,6 +8,7 @@ import ru.practicum.shareit.user.model.User;
 
 import java.util.List;
 import org.mapstruct.MappingConstants;
+
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface ItemRequestMapper {
 
