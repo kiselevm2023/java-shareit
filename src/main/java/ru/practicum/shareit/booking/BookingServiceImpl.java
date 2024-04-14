@@ -40,7 +40,6 @@ public class BookingServiceImpl implements BookingService {
                 .save(bookingMapper.toBooking(bookingDto, item, booker, BookingStatus.WAITING)));
     }
 
-    @Transactional
     public BookingDto approvingBooking(Long bookingId, Long ownerId, Boolean approved) {
 
         Booking booking = bookingRepository.findByIdAndOwnerIdNotOrThrow(bookingId, ownerId);
@@ -51,9 +50,10 @@ public class BookingServiceImpl implements BookingService {
         }
 
         booking.setStatus(approved == true ? BookingStatus.APPROVED : BookingStatus.REJECTED);
-        return bookingMapper.toBookingDto(booking);
+        return bookingMapper.toBookingDto(bookingRepository.save(booking));
     }
 
+    @Transactional
     public BookingDto getBookingById(Long bookingId, Long userId) {
 
         User user = userRepository.searchByIdOrThrow(userId);
@@ -64,6 +64,7 @@ public class BookingServiceImpl implements BookingService {
         return bookingMapper.toBookingDto(booking);
     }
 
+    @Transactional
     public List<BookingDto> findUserBookingsWithState(Long userId, String status, Integer from, Integer size) {
         if (size <= 0 || from < 0) {
             throw new BadRequestException("Неверные параметры пагинации");
@@ -77,6 +78,7 @@ public class BookingServiceImpl implements BookingService {
                 .findUserBookingsWithState(userId, mapToStateString(status), pageable).getContent());
     }
 
+    @Transactional
     public List<BookingDto> findOwnerBookingsWithState(Long ownerId, String status, Integer from, Integer size) {
         if (size <= 0 || from < 0) {
             throw new BadRequestException("Неверные параметры пагинации");
