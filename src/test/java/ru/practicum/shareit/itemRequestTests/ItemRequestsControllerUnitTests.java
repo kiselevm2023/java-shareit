@@ -59,6 +59,7 @@ public class ItemRequestsControllerUnitTests {
 
         user = UserDto
                 .builder()
+                .id(1)
                 .name("name")
                 .email("user@email.com")
                 .build();
@@ -111,7 +112,7 @@ public class ItemRequestsControllerUnitTests {
         assertThrows(NotFoundException.class, () -> itemRequestController.getItemsRequest(154645L));
     }
 
-    /* @Test
+    @Test
     void getAllItemRequestsTest() {
         user.setEmail("u6644y@df.ru");
         UserDto userDTO3 = userController.createUser(user);
@@ -123,7 +124,7 @@ public class ItemRequestsControllerUnitTests {
 
         UserDto userDto4 = userController.createUser(user);
         assertEquals(0, itemRequestController.getAllItemRequests(userDto4.getId(), 0, 10).size());
-    } */
+    }
 
     @Test
     void getAllByWrongUser() {
