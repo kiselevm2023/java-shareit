@@ -30,8 +30,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     private final ItemRepository itemRepository;
     private final ItemMapper itemMapper;
     private final ItemRequestMapper itemRequestMapper;
-
-    @Transactional
+    
     public ItemRequestDto createItemRequestDto(Long userId, ItemRequestDto itemRequestDto) {
         User user = userRepository.searchByIdOrThrow(userId);
 
@@ -58,7 +57,6 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         }
         return itemRequestDtos;
     }
-
 
     public ItemRequestDto getItemRequests(Long userId, Long requestId) {
 
