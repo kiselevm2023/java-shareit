@@ -40,6 +40,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         return itemRequestMapper.toItemRequestDto(savedItemRequest);
     }
 
+    @Transactional
     public List<ItemRequestDto> getItemsRequests(Long userId) {
 
         userRepository.searchByIdOrThrow(userId);
@@ -59,7 +60,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         return itemRequestDtos;
     }
 
-
+    @Transactional
     public ItemRequestDto getItemRequests(Long userId, Long requestId) {
 
         userRepository.searchByIdOrThrow(userId);
@@ -72,6 +73,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         return itemRequestMapper.toItemRequestDto(itemRequest, itemsDtos);
     }
 
+    @Transactional
     @Override
     public List<ItemRequestDto> getAllItemRequests(Long userId, Integer from, Integer size) {
 

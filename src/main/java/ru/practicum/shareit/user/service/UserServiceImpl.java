@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.user.dto.UserMapper;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.repository.UserRepository;
 
 @Service
@@ -24,7 +23,6 @@ public class UserServiceImpl implements UserService {
         return userMapper.toUserDto(users);
     }
 
-    @Transactional
     public UserDto createUser(UserDto userDto) {
 
         return userMapper.toUserDto(repository.save(userMapper.toUser(userDto)));

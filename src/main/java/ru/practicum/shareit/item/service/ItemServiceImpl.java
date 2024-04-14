@@ -50,6 +50,7 @@ public class ItemServiceImpl implements ItemService {
     private final RequestRepository requestRepository;
     private final BookingService bookingService;
 
+    @Transactional
     @Override
     public ItemWithBookingsDateDto getItemById(Long itemId, Long ownerId) {
         User user = userRepository.searchByIdOrThrow(ownerId);
@@ -70,6 +71,7 @@ public class ItemServiceImpl implements ItemService {
         return itemMapper.toItemWithBookingDto(item, lastBooking, nextBooking, commentsDto == null ? List.of() : commentsDto);
     }
 
+    @Transactional
     @Override
     public List<ItemWithBookingsDateDto> getAllItemsByOwnerId(Long id, Integer from, Integer size) {
         if (size <= 0 || from < 0) {
@@ -141,6 +143,7 @@ public class ItemServiceImpl implements ItemService {
 
     }
 
+    @Transactional
     @Override
     public ItemDto createItem(Long id, ItemDto itemDto) {
 
@@ -158,6 +161,7 @@ public class ItemServiceImpl implements ItemService {
         return itemMapper.toItemDto(savedItem);
     }
 
+    @Transactional
     public ItemDto updateItem(Long idItem, Long idOwner, ItemDto itemDto) {
 
         User user = userRepository.searchByIdOrThrow(idOwner);
@@ -185,6 +189,7 @@ public class ItemServiceImpl implements ItemService {
         return itemMapper.toItemDto(item);
     }
 
+    @Transactional
     public CommentDto createComment(Long userId, Long idItem, CommentDto commentDto) {
 
         User user = userRepository.searchByIdOrThrow(userId);
