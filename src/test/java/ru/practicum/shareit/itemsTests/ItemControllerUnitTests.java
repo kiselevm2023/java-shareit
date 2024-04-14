@@ -17,7 +17,6 @@ import ru.practicum.shareit.request.ItemRequestController;
 import ru.practicum.shareit.request.ItemRequestDto;
 import ru.practicum.shareit.user.controller.UserController;
 import ru.practicum.shareit.user.dto.UserDto;
-//import ru.practicum.shareit.user.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -117,7 +116,7 @@ public class ItemControllerUnitTests {
         assertEquals(item.getId(), ew.getId());
     }
 
-    /*@Test
+    @Test
     void createItemRequestTest() {
         userM.setEmail("266w1@er.ru");
         UserDto user = userController.createUser(userM);
@@ -125,6 +124,7 @@ public class ItemControllerUnitTests {
 
         ItemRequestDto itemRequest = itemRequestController.createItemRequest(user.getId(), itemRequestDto);
         itemDto.setRequestId(itemRequest.getId());
+        userM.setEmail("266w1@era.ru");
         UserDto user2 = userController.createUser(userM);
         ItemDto item = itemController.createItem(user.getId(), itemDto);
 
@@ -135,7 +135,7 @@ public class ItemControllerUnitTests {
         assertEquals(item.getDescription(), actualItem.getDescription());
         assertEquals(item.getAvailable(), actualItem.getAvailable());
 
-    } */
+    }
 
     @Test
     void createByWrongUser() throws Throwable {
