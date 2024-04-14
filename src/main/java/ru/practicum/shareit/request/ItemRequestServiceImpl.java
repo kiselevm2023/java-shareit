@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+//import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exception.BadRequestException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemMapper;
@@ -30,10 +30,8 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     private final ItemRepository itemRepository;
     private final ItemMapper itemMapper;
     private final ItemRequestMapper itemRequestMapper;
-    
     public ItemRequestDto createItemRequestDto(Long userId, ItemRequestDto itemRequestDto) {
         User user = userRepository.searchByIdOrThrow(userId);
-
         ItemRequest itemRequest = itemRequestMapper.toItemRequest(user, itemRequestDto);
         ItemRequest savedItemRequest = requestRepository.save(itemRequest);
         return itemRequestMapper.toItemRequestDto(savedItemRequest);
