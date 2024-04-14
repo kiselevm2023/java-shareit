@@ -4,14 +4,16 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.validated.Create;
 
 import javax.validation.constraints.NotBlank;
 
-@Data
+@Getter
+@Setter
 @Builder
 public class ItemRequestDto {
 

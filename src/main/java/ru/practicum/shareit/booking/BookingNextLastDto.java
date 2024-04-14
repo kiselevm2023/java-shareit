@@ -1,7 +1,8 @@
 package ru.practicum.shareit.booking;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.validation.annotation.Validated;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.status.BookingStatus;
@@ -13,7 +14,8 @@ import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
 @Validated
 @Builder
 public class BookingNextLastDto {

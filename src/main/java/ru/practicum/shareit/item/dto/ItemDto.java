@@ -5,15 +5,16 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import ru.practicum.shareit.item.comment.CommentDto;
 import ru.practicum.shareit.request.ItemRequestDto;
 import ru.practicum.shareit.validated.Create;
 
 import java.util.List;
 
-
-@Data
+@Getter
+@Setter
 @Builder
 public class ItemDto {
 
