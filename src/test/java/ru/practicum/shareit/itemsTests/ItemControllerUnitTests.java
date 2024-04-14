@@ -45,7 +45,7 @@ public class ItemControllerUnitTests {
 
     private ItemWithBookingsDateDto itemWithBookingsDateDto;
 
-    private UserDto userDto;
+    private UserDto user;
     private UserDto userM;
 
     private UserDto userM2;
@@ -83,7 +83,7 @@ public class ItemControllerUnitTests {
                 .email("user@email.com")
                 .build();
 
-        userDto = UserDto
+        user = UserDto
                 .builder()
                 .name("name")
                 .email("user@email.com")
@@ -166,16 +166,15 @@ public class ItemControllerUnitTests {
         assertThrows(NotFoundException.class, () -> itemController.updateItem(1L, 1L, itemDto));
     }
 
-    /* @Test
+    @Test
     void updateByWrongUserTest() {
         userM.setEmail("1ee@er.ru");
 
-        userController.createUser(userM);
         UserDto user = userController.createUser(userM);
 
         itemController.createItem(user.getId(), itemDto);
         assertThrows(NotFoundException.class, () -> itemController.updateItem(10323L, 123L, itemDto2));
-    }  */
+    }
 
 
     @Test
