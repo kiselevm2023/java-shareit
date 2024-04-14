@@ -61,6 +61,7 @@ public class BookingControllerUnitTests {
 
         user = UserDto
                 .builder()
+                .id(1)
                 .name("name")
                 .email("user@email.com")
                 .build();
@@ -205,7 +206,7 @@ public class BookingControllerUnitTests {
                 () -> bookingController.approvingBooking(user3.getId(), booking.getId(), true));
     }
 
-    /* @Test
+    @Test
     void getAllByUserTest() {
         UserDto usewerr = userController.createUser(user);
         ItemDto item = itemController.createItem(usewerr.getId(), itemDto);
@@ -222,7 +223,7 @@ public class BookingControllerUnitTests {
         assertEquals(1, bookingController.findOwnerBookingsWithState(
                 user.getId(), "ALL", 0, 10).size());
 
-    }  */
+    }
 
     @Test
     void getByWrongPaginationTest() {
