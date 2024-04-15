@@ -37,7 +37,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         return itemRequestMapper.toItemRequestDto(savedItemRequest);
     }
 
-    public List<ItemRequestDto> getItemsRequests(Long userId) {
+    /*public List<ItemRequestDto> getItemsRequests(Long userId) {
 
         userRepository.searchByIdOrThrow(userId);
 
@@ -54,6 +54,18 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
         }
         return itemRequestDtos;
+    }  */
+
+    @Override
+    public List<ItemRequestDto> getItemsRequests(Long userId) {
+        userRepository.searchByIdOrThrow(userId);
+        List<ItemRequest> authorsRequests = requestRepository.findAllByRequestorId(userId, Sort.by(DESC, "created"));
+        Map<ItemRequest, List<Item>> requestMap = itemRepository.findByRequestIn(authorsRequests, Sort.by(ASC, "id"))
+                .stream()
+                .collect(groupingBy(Item::getRequest, toList()));
+        return authorsRequests.stream()
+                .map(itemRequest -> setItemRequestItems(itemRequest, requestMap.get(itemRequest)))
+                .collect(toList());
     }
 
     public ItemRequestDto getItemRequests(Long userId, Long requestId) {

@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import ru.practicum.shareit.exception.NotFoundException;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 
@@ -22,5 +23,7 @@ public interface RequestRepository extends JpaRepository<ItemRequest, Long> {
     default ItemRequest searchByIdOrThrow(Long requestId) {
         return findById(requestId).orElseThrow(() -> new NotFoundException("Запрос не найден"));
     }
+
+    List<ItemRequest> findAllByRequestorId(Long authorId, Sort sort);
 
 }
