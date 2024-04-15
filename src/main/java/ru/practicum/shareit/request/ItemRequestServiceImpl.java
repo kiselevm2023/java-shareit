@@ -37,29 +37,9 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         return itemRequestMapper.toItemRequestDto(savedItemRequest);
     }
 
-    /*public List<ItemRequestDto> getItemsRequests(Long userId) {
-
-        userRepository.searchByIdOrThrow(userId);
-
-        List<ItemRequest> itemRequests = requestRepository.getAllItemRequestsByOwnerId(userId);
-        List<ItemRequestDto> itemRequestDtos = new ArrayList<>();
-
-        for (ItemRequest itemRequest : itemRequests) {
-            List<ItemDto> itemsDtos = itemMapper
-                    .toItemDto(itemRepository.findAllItemsByRequestId(itemRequest.getId()));
-
-            ItemRequestDto itemRequestDto = itemRequestMapper.toItemRequestDtoWithItems(itemRequest, itemsDtos);
-
-            itemRequestDtos.add(itemRequestDto);
-
-        }
-        return itemRequestDtos;
-    }  */
-
     @Override
     public List<ItemRequestDto> getItemsRequests(Long userId) {
         userRepository.searchByIdOrThrow(userId);
-        //List<ItemRequest> authorsRequests = requestRepository.findAllByRequestorId(userId, Sort.by(DESC, "created"));
         List<ItemRequest> authorsRequests = requestRepository.getAllItemRequestsByRequestorId(userId);
         Map<ItemRequest, List<Item>> requestMap = itemRepository.findByRequestIn(authorsRequests, Sort.by(ASC, "id"))
                 .stream()
