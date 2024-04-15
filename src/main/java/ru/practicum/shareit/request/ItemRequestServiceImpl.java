@@ -59,7 +59,8 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     @Override
     public List<ItemRequestDto> getItemsRequests(Long userId) {
         userRepository.searchByIdOrThrow(userId);
-        List<ItemRequest> authorsRequests = requestRepository.findAllByRequestorId(userId, Sort.by(DESC, "created"));
+        //List<ItemRequest> authorsRequests = requestRepository.findAllByRequestorId(userId, Sort.by(DESC, "created"));
+        List<ItemRequest> authorsRequests = requestRepository.getAllItemRequestsByRequestorId(userId);
         Map<ItemRequest, List<Item>> requestMap = itemRepository.findByRequestIn(authorsRequests, Sort.by(ASC, "id"))
                 .stream()
                 .collect(groupingBy(Item::getRequest, toList()));

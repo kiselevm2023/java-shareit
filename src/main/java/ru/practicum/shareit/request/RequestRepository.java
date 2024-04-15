@@ -16,7 +16,7 @@ public interface RequestRepository extends JpaRepository<ItemRequest, Long> {
             "left join Item i ON ir.id = i.request.id " +
             "where ir.requestor.id = :userId " +
             "order by ir.created DESC")
-    List<ItemRequest> getAllItemRequestsByOwnerId(@Param("userId") Long userId);
+    List<ItemRequest> getAllItemRequestsByRequestorId(@Param("userId") Long userId);
 
     Page<ItemRequest> findAllRequestsByRequestorIdNot(Long requestorId, Pageable pageable);
 

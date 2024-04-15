@@ -40,7 +40,7 @@ public class ItemRequestsRepoTests {
         User user = userRepository.save(User.builder().name("na13me").email("em123ail@email.com").build());
         itemRequestRepository.save(ItemRequest.builder().description("description").requestor(user)
                 .created(LocalDateTime.now()).build());
-        List<ItemRequest> items = itemRequestRepository.getAllItemRequestsByOwnerId(user.getId());
+        List<ItemRequest> items = itemRequestRepository.getAllItemRequestsByRequestorId(user.getId());
         assertThat(items.size(), equalTo(1));
     }
 
