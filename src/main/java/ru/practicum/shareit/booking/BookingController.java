@@ -2,56 +2,67 @@ package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.booking.dto.BookingDto;
-import ru.practicum.shareit.booking.dto.CreateBookingDto;
-import ru.practicum.shareit.data.Constants;
+import ru.practicum.shareit.constants.HttpConstants;
+import ru.practicum.shareit.validated.Create;
 
-
-import javax.validation.Valid;
 import java.util.List;
 
+
 @RestController
-@RequestMapping("/bookings")
 @RequiredArgsConstructor
+@RequestMapping(path = "/bookings")
 @Slf4j
 public class BookingController {
 
     private final BookingService bookingService;
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping()
-    public BookingDto createBooking(@RequestHeader(Constants.TITLE_ITEM_BOOKING) long userId,
-                                    @Valid @RequestBody CreateBookingDto createBookingDto) {
-        log.info("Получен запрос на создание аренды");
-        return bookingService.createBooking(createBookingDto, userId);
+    public BookingDto createBooking(@RequestHeader(HttpConstants.X_SHARER_USER_ID) Long bookerId,
+                                    @Validated(Create.class) @RequestBody BookingDto bookingDto) {
+        log.info("Post request /users, data transmitted: {}", bookingDto);
+
+        return bookingService.createBooking(bookerId, bookingDto);
+
     }
 
     @PatchMapping("/{bookingId}")
-    public BookingDto approvedBooking(@RequestHeader(Constants.TITLE_ITEM_BOOKING) long userId,
-                                      @PathVariable("bookingId") long bookingId,
-                                      @RequestParam(name = "approved") boolean isApproved) {
-        log.info("Получен запрос на обновление статуса");
-        return bookingService.approvedBooking(userId, bookingId, isApproved);
+    public BookingDto approvingBooking(@RequestHeader(HttpConstants.X_SHARER_USER_ID) Long ownerId,
+                                       @PathVariable Long bookingId,
+                                       @RequestParam(value = "approved") Boolean approved) {
+        log.info("Patch request /booking approved, data transmitted: {}", approved);
+
+        return bookingService.approvingBooking(bookingId, ownerId, approved);
     }
 
     @GetMapping("/{bookingId}")
-    public BookingDto getBookingById(@RequestHeader(Constants.TITLE_ITEM_BOOKING) long userId,
-                                     @PathVariable("bookingId") long bookingId) {
-        log.info("Получен запрос о получении информации по конкретному бронированию");
-        return bookingService.getBookingById(userId, bookingId);
+    public BookingDto getBookingById(@RequestHeader(HttpConstants.X_SHARER_USER_ID) Long userId,
+                                     @PathVariable Long bookingId) {
+        log.info("Get request /booking, userId: {},  and bookingId: {} ", userId, bookingId);
+
+        return bookingService.getBookingById(bookingId, userId);
     }
 
     @GetMapping()
-    public List<BookingDto> getAllBookingForUser(@RequestHeader(Constants.TITLE_ITEM_BOOKING) long userId,
-                                                 @RequestParam(name = "state", defaultValue = "ALL") String state) {
-        log.info("Получен запрос на получение списка всех бронирований пользователя");
-        return bookingService.getAllBookingForUser(userId, state);
+    public List<BookingDto> findUserBookingsWithState(
+            @RequestHeader(HttpConstants.X_SHARER_USER_ID) Long userId,
+            @RequestParam(value = "state", defaultValue = "ALL") String status,
+            @RequestParam(value = "from", defaultValue = "0") Integer from,
+            @RequestParam(value = "size", defaultValue = "10") Integer size) {
+        log.info("Get with params state, userId: {}, status: {},  from: {}, size: {}", userId, status, from, size);
+        return bookingService.findUserBookingsWithState(userId, status, from, size);
     }
 
     @GetMapping("/owner")
-    public List<BookingDto> getAllBookingForOwner(@RequestHeader(Constants.TITLE_ITEM_BOOKING) long userId,
-                                                  @RequestParam(name = "state", defaultValue = "ALL") String state) {
-        log.info("Получен запрос на получение списка всех бронирований для владельца");
-        return bookingService.getAllBookingForOwner(userId, state);
+    public List<BookingDto> findOwnerBookingsWithState(
+            @RequestHeader(HttpConstants.X_SHARER_USER_ID) Long ownerId,
+            @RequestParam(value = "state", defaultValue = "ALL") String status,
+            @RequestParam(value = "from", defaultValue = "0") Integer from,
+            @RequestParam(value = "size", defaultValue = "10") Integer size) {
+        log.info("Get with params state, userId: {}, status: {},  from: {}, size: {}", ownerId, status, from, size);
+        return bookingService.findOwnerBookingsWithState(ownerId, status, from, size);
     }
 }

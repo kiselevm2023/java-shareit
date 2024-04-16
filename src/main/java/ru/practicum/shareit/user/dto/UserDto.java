@@ -1,24 +1,25 @@
 package ru.practicum.shareit.user.dto;
 
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
+import ru.practicum.shareit.validated.Create;
+import ru.practicum.shareit.validated.Update;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
 
-@Data
-@RequiredArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class UserDto {
 
     private long id;
 
-    @NotBlank(groups = {Check.OnCreate.class}, message = "Поле name пустое")
-    @Size(groups = {Check.OnCreate.class, Check.OnUpdate.class}, max = 255, message = "The name length must be no more than {max} characters")
+    @NotBlank(groups = {Create.class}, message = "Имя обязательное поле")
     private String name;
-    @NotEmpty(groups = {Check.OnCreate.class}, message = "The field email is empty")
-    @Email(groups = {Check.OnCreate.class, Check.OnUpdate.class}, message = "The field email incorrect")
-    @Size(groups = {Check.OnCreate.class, Check.OnUpdate.class}, max = 512, message = "The email length must be no more than {max} characters")
+
+    @NotBlank(groups = {Create.class}, message = "Email обязательное поле")
+    @Email(groups = {Create.class, Update.class}, message = "Не верный формат email")
     private String email;
 }

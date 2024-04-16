@@ -1,69 +1,90 @@
 package ru.practicum.shareit.item;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.comment.dto.ResponseComment;
-import ru.practicum.shareit.data.Constants;
-import ru.practicum.shareit.item.dto.Check;
-import ru.practicum.shareit.item.dto.CreateItemDto;
-import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.comment.dto.RequestComment;
-
-import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
-@RestController
-@RequestMapping("/items")
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.constants.HttpConstants;
+import ru.practicum.shareit.item.comment.CommentDto;
+import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemWithBookingsDateDto;
+import ru.practicum.shareit.item.service.ItemService;
+import ru.practicum.shareit.validated.Create;
+import ru.practicum.shareit.validated.Update;
+
+
 @Slf4j
+@RestController
+@RequestMapping(path = "/items")
+@RequiredArgsConstructor
 public class ItemController {
 
     private final ItemService itemService;
 
-    @Autowired
-    public ItemController(ItemService itemService) {
-        this.itemService = itemService;
-    }
-
-    @PostMapping
-    public ItemDto createItem(@RequestHeader(Constants.TITLE_ITEM_BOOKING) Long userId, @RequestBody @Validated(Check.OnCreate.class) CreateItemDto createItemDto) {
-        log.info("Получен запрос на добавление вещи");
-        return itemService.createItem(userId, createItemDto);
-    }
-
-    @PatchMapping("/{itemId}")
-    public ItemDto updateItem(@RequestHeader(Constants.TITLE_ITEM_BOOKING) Long userId, @RequestBody @Validated(Check.class) CreateItemDto itemDto,
-                              @PathVariable("itemId") Long itemId) {
-        log.info("Получен запрос на обновление информации о вещи");
-        return itemService.updateItem(userId, itemDto, itemId);
-    }
-
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping
-    public List<ItemDto> getAllItemForOwner(@RequestHeader(Constants.TITLE_ITEM_BOOKING) Long userId) {
-        log.info("Владелец запросил список своих вещей");
-        return itemService.getAllItemForOwner(userId);
+    public List<ItemWithBookingsDateDto> getAllItemsByOwnerId(
+            @RequestHeader(HttpConstants.X_SHARER_USER_ID) Long id,
+            @RequestParam(value = "from", defaultValue = "0") Integer from,
+            @RequestParam(value = "size", defaultValue = "10") Integer size) {
+        log.info("Get request /items, owner id: {}", id);
+        return itemService.getAllItemsByOwnerId(id, from, size);
     }
 
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/search")
-    public List<ItemDto> searchItem(@RequestHeader(Constants.TITLE_ITEM_BOOKING) Long userId,
-                                    @RequestParam(name = "text", defaultValue = "") String text) {
-        log.info("Запрос на поиск вещи по содержанию");
-        return itemService.getItemForBooker(text, userId);
+    public List<ItemDto> searchAllItemsByOwnerId(
+            @RequestParam(value = "text") String text,
+            @RequestParam(value = "from", defaultValue = "0") Integer from,
+            @RequestParam(value = "size", defaultValue = "10") Integer size) {
+        if (text.isBlank()) return new ArrayList<>();
+
+        log.info("Get search items, request: {}", text);
+        return itemService.searchItems(text, from, size);
     }
 
-    @GetMapping("/{itemId}")
-    public ItemDto getItemById(@PathVariable("itemId") Long itemId,
-                               @RequestHeader(value = Constants.TITLE_ITEM_BOOKING) long userId) {
-        log.info("Получен запрос на поиск вещи по id");
-        return itemService.getItemById(itemId, userId);
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/{id}")
+    public ItemWithBookingsDateDto getItemById(
+            @RequestHeader(HttpConstants.X_SHARER_USER_ID) Long userId,
+            @PathVariable Long id) {
+        log.info("Get request /items, item id: {}", id);
+        return itemService.getItemById(id, userId);
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping
+    public ItemDto createItem(
+            @RequestHeader(HttpConstants.X_SHARER_USER_ID) Long id,
+            @Validated(Create.class) @RequestBody ItemDto itemDto) {
+        log.info("Post request /items, data transmitted: {}", itemDto);
+        return itemService.createItem(id, itemDto);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @PatchMapping("/{idItem}")
+    public ItemDto updateItem(
+            @PathVariable Long idItem,
+            @RequestHeader(HttpConstants.X_SHARER_USER_ID) Long idOwner,
+            @Validated(Update.class) @RequestBody ItemDto itemDto) {
+        log.info("Patch request /items data transmitted: {}", itemDto);
+        ItemDto itemDto1 = itemService.updateItem(idItem, idOwner, itemDto);
+        log.info("Patch DATA: {}", itemDto1);
+
+        return itemDto1;
+    }
+
+    @ResponseStatus(HttpStatus.OK)
     @PostMapping("/{itemId}/comment")
-    public ResponseComment createComment(@RequestHeader(Constants.TITLE_ITEM_BOOKING) long idUser,
-                                         @Valid @RequestBody RequestComment commentDto,
-                                         @PathVariable("itemId") long itemId) {
-        log.info("Получен запрос на добавление комментария");
-        return itemService.createComment(idUser, commentDto, itemId);
+    public CommentDto createComment(
+            @RequestHeader(HttpConstants.X_SHARER_USER_ID) Long id,
+            @PathVariable Long itemId,
+            @Validated(Create.class) @RequestBody CommentDto commentDto) {
+        log.info("Post request /items/{}/comment, data transmitted: {}", itemId, commentDto);
+        return itemService.createComment(id, itemId, commentDto);
     }
 }
