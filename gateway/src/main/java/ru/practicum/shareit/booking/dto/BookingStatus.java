@@ -1,5 +1,7 @@
 package ru.practicum.shareit.booking.dto;
 
+import ru.practicum.shareit.exception.UnsupportedStatusException;
+
 public enum BookingStatus {
     WAITING,
     APPROVED,
@@ -16,6 +18,6 @@ public enum BookingStatus {
                 return status;
             }
         }
-        throw new IllegalArgumentException("Unknown BookingStatus: " + value);
+        throw new UnsupportedStatusException("Unknown state: " + value);
     }
 }
