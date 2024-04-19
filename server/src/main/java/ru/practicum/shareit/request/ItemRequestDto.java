@@ -8,9 +8,6 @@ import lombok.Getter;
 import lombok.Setter;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.validated.Create;
-
-import javax.validation.constraints.NotBlank;
 
 @Getter
 @Setter
@@ -19,7 +16,6 @@ public class ItemRequestDto {
 
     private Long id;
 
-    @NotBlank(groups = Create.class, message = "Заполните описание запроса")
     private String description;
 
     private UserDto requestor;
